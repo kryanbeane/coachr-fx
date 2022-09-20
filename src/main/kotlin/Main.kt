@@ -5,26 +5,32 @@ private val logger = KotlinLogging.logger {}
 var clients: MutableMap<String, Client> = mutableMapOf()
 
 fun main(args: Array<String>) {
-    mainMenu()
+    mainMenuChoices()
 }
 
-fun mainMenu() {
-    logger.info {"Coachr 1.0"}
+fun mainMenuChoices() {
+    println(
+        "\n" +
+            "░█████╗░░█████╗░░█████╗░░█████╗░██╗░░██╗██████╗░\n" +
+            "██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║░░██║██╔══██╗\n" +
+            "██║░░╚═╝██║░░██║███████║██║░░╚═╝███████║██████╔╝\n" +
+            "██║░░██╗██║░░██║██╔══██║██║░░██╗██╔══██║██╔══██╗\n" +
+            "╚█████╔╝╚█████╔╝██║░░██║╚█████╔╝██║░░██║██║░░██║\n" +
+            "░╚════╝░░╚════╝░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝"
 
+    )
     var input: Int
     do {
         input = displayMainMenu()
         when(input) {
             1 ->
-                clientCreationMenu()
+                creationMenuChoices()
             2 ->
                 println()
             3 ->
                 println()
             4 ->
-                println()
-            5 ->
-                testListClientInfo()
+                listAllClientsInfo()
             0 ->
                 println("Exiting Coachr")
             else -> println("Invalid Option")
@@ -44,7 +50,6 @@ fun displayMainMenu() : Int {
     println("2. List All Clients")
     println("3. Client Update Menu")
     println("4. Client Deletion Menu")
-    println("5. Test list client info")
     println("0. Exit")
     println()
     print("Enter an integer: ")
@@ -57,7 +62,7 @@ fun displayMainMenu() : Int {
     return option
 }
 
-fun clientCreationMenu() {
+fun creationMenuChoices() {
     println()
     var input: Int
     do {
@@ -70,7 +75,7 @@ fun clientCreationMenu() {
             3 ->
                 println()
             4 ->
-                mainMenu()
+               mainMenuChoices()
             0 ->
                 println("Exiting Coachr")
             else -> println("Invalid Option")
@@ -145,11 +150,11 @@ fun buildWorkoutPlan() {
                 createWorkout(clients[clientName]!!)
             2 -> {
                 println("Exiting to creation menu")
-                clientCreationMenu()
+                creationMenuChoices()
             }
             0 -> {
                 println("Exiting to main menu")
-                mainMenu()
+               mainMenuChoices()
             }
             else -> println("Invalid Option")
         }
@@ -179,11 +184,11 @@ fun createWorkout(client: Client) {
 
             2 -> {
                 println("Exiting to creation menu")
-                clientCreationMenu()
+                creationMenuChoices()
             }
             0 -> {
                 println("Exiting to main menu")
-                mainMenu()
+               mainMenuChoices()
             }
             else -> println("Invalid Option")
         }
@@ -214,18 +219,28 @@ fun listClientNames() {
     println()
 }
 
-fun testListClientInfo() {
+fun listAllClientsInfo() {
     for(client in clients) {
-        println("Name ${client.key}")
-        println("Email ${client.value.emailAddress}")
-        println("Number ${client.value.phoneNumber}")
-        println("Workouts ${client.value.workoutPlan}")
+        println("Name: ${client.key}")
+        println("Email: ${client.value.emailAddress}")
+        println("Number: ${client.value.phoneNumber}")
+        println()
+
+        println("<<<< WORKOUT PLAN >>>>")
         for(workout in client.value.workoutPlan) {
-            println("Workout name ${workout.key}")
-            println("Workout type ${workout.value.type}")
+            println("Workout name: ${workout.key}")
+            println("Workout type: ${workout.value.type}")
+            println()
+
             for(exercise in workout.value.exercises) {
                 println("Exercise name ${exercise.key}")
+                println("Exercise description: ${exercise.value.description}")
+                println("Number of perscribed sets: ${exercise.value.sets}")
+                println("Number of perscribed reps: ${exercise.value.reps}")
+                println("Desired set RIR: ${exercise.value.repsInReserve}")
+                println()
             }
         }
+        println()
     }
 }
