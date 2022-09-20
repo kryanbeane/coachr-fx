@@ -26,11 +26,11 @@ fun mainMenuChoices() {
             1 ->
                 creationMenuChoices()
             2 ->
-                println()
+                listAllClientsInfo()
             3 ->
                 println()
             4 ->
-                listAllClientsInfo()
+                println()
             0 ->
                 println("Exiting Coachr")
             else -> println("Invalid Option")
@@ -71,10 +71,8 @@ fun creationMenuChoices() {
             1 ->
                 createClient(clients)
             2 ->
-                buildWorkoutPlan()
+                createWorkoutPlan()
             3 ->
-                println()
-            4 ->
                mainMenuChoices()
             0 ->
                 println("Exiting Coachr")
@@ -91,9 +89,8 @@ fun displayCreationMenu(): Int {
     println("Creation Menu")
     println()
     println("1. Create Client")
-    println("2. Build Workout for a client")
-    println("3. Add Exercises to Workouts")
-    println("4. Back to Main Menu")
+    println("2. Create Workout for a client")
+    println("3. Back to Main Menu")
     println("0. Exit")
     println()
     print("Enter an integer: ")
@@ -127,14 +124,15 @@ fun createClient(clientMap: MutableMap<String, Client>) {
     println("Client $name already exists!")
 }
 
-fun buildWorkoutPlan() {
+fun createWorkoutPlan() {
     println()
     println("Creating a new workout...")
-
+    println()
     println("Enter a client name: ")
     listClientNames()
     val clientName = readLine()!!
 
+    println()
     println("$clientName selected")
     println()
 
@@ -146,22 +144,20 @@ fun buildWorkoutPlan() {
     do {
         val input = readLine()!!.toInt()
         when (input) {
-            1 ->
-                createWorkout(clients[clientName]!!)
+            1 -> createWorkout(clients[clientName]!!)
             2 -> {
                 println("Exiting to creation menu")
                 creationMenuChoices()
             }
             0 -> {
                 println("Exiting to main menu")
-               mainMenuChoices()
+                mainMenuChoices()
             }
             else -> println("Invalid Option")
         }
         println()
     } while (input != 0)
 }
-
 
 fun createWorkout(client: Client) {
     println("Enter workout name: ")
@@ -179,16 +175,14 @@ fun createWorkout(client: Client) {
 
         val input = readLine()!!.toInt()
         when (input) {
-            1 ->
-                addExercise(client.workoutPlan[workoutName]!!)
-
+            1 -> addExercise(client.workoutPlan[workoutName]!!)
             2 -> {
                 println("Exiting to creation menu")
                 creationMenuChoices()
             }
             0 -> {
                 println("Exiting to main menu")
-               mainMenuChoices()
+                mainMenuChoices()
             }
             else -> println("Invalid Option")
         }
@@ -214,7 +208,7 @@ fun addExercise(workout: Workout) {
 fun listClientNames() {
     println()
     clients.forEach {
-        println(it.key)
+        println("• ${it.key}")
     }
     println()
 }
