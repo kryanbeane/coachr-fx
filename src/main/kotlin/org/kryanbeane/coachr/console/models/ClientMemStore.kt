@@ -140,7 +140,13 @@ class ClientMemStore: ClientStore {
      */
     internal fun logClients(clientList: ArrayList<ClientModel>) {
         clientList.forEach{
-            logger.info("$it")
+            logger.info {
+                it.fullName + "\n" +
+                "Client ID: " + it.id + "\n" +
+                "Email Address: " + it.emailAddress + "\n" +
+                "Phone Number: " + it.phoneNumber + "\n" +
+                "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
+            }
         }
     }
 
