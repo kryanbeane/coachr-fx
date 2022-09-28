@@ -11,4 +11,7 @@ interface ClientStore {
     fun updateClientDetails(client: ClientModel)
     fun updateClientWorkout(client: ClientModel, workout: WorkoutModel)
     fun updateExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel)
+    fun deleteClient(client: ClientModel)
+    fun deleteWorkout(client: ClientModel, workout: WorkoutModel)
+    fun deleteExercise(workout: WorkoutModel, exercise: ExerciseModel)
 }

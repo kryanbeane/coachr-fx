@@ -134,6 +134,35 @@ class ClientMemStore: ClientStore {
     }
 
     /**
+     * delete client
+     *
+     * @param client
+     */
+    override fun deleteClient(client: ClientModel) {
+        clients.remove(client)
+    }
+
+    /**
+     * delete workout from client params workout plan
+     *
+     * @param client
+     * @param workout
+     */
+    override fun deleteWorkout(client: ClientModel, workout: WorkoutModel) {
+        client.workoutPlan.remove(workout)
+    }
+
+    /**
+     * delete exercise from workout param exercise list
+     *
+     * @param workout
+     * @param exercise
+     */
+    override fun deleteExercise(workout: WorkoutModel, exercise: ExerciseModel) {
+        workout.exercises.remove(exercise)
+    }
+
+    /**
      * loop through client arraylist param and log all clients
      *
      * @param clientList
@@ -151,13 +180,42 @@ class ClientMemStore: ClientStore {
     }
 
     /**
+     * log all client names for use of client selection
+     */
+    internal fun logClientNames() {
+        clients.forEach{
+            logger.info {
+                "Client Name: " + it.fullName + "\n"
+            }
+        }
+    }
+
+    /**
      * loop through workout plan arraylist of client param and log all workouts
      *
      * @param client
      */
     internal fun logWorkouts(client: ClientModel) {
         client.workoutPlan.forEach{
-            logger.info("$it")
+            logger.info {
+                it.name + "\n" +
+                "Workout ID: " + it.id + "\n" +
+                "Workout Type: " + it.type + "\n" +
+                "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
+            }
+        }
+    }
+
+    /**
+     *  log all workout names for use of workout selection
+     *
+     * @param client
+     */
+    internal fun logWorkoutNames(client: ClientModel) {
+        client.workoutPlan.forEach{
+            logger.info {
+                "Workout Name: " + it.name + "\n"
+            }
         }
     }
 
@@ -168,7 +226,27 @@ class ClientMemStore: ClientStore {
      */
     internal fun logExercises(workout: WorkoutModel) {
         workout.exercises.forEach{
-            logger.info("$it")
+            logger.info {
+                it.name + "\n" +
+                "Exercise ID: " + it.id + "\n" +
+                "Exercise Description: " + it.description + "\n" +
+                "Sets: " + it.sets + "\n" +
+                "Reps: " + it.reps + "\n" +
+                "Reps in Reserve: " + it.repsInReserve + "\n" + "\n"
+            }
+        }
+    }
+
+    /**
+     * log all exercise names for use of exercise selection
+     *
+     * @param workout
+     */
+    internal fun logExerciseNames(workout: WorkoutModel) {
+        workout.exercises.forEach{
+            logger.info {
+                "Exercise Name: " + it.name + "\n"
+            }
         }
     }
 }

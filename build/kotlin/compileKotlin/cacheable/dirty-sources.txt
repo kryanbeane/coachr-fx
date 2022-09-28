@@ -1,0 +1,12 @@
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/models/ClientMemStore.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/models/WorkoutModel.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/models/ClientStore.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/models/ExerciseModel.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/views/ClientView.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/views/WorkoutView.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/controllers/ClientController.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/models/ClientModel.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/controllers/ExerciseController.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/main/Main.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/controllers/WorkoutController.kt
+/home/bryan/code/github.com/kryanbeane/coachr/src/main/kotlin/org/kryanbeane/coachr/console/views/ExerciseView.kt

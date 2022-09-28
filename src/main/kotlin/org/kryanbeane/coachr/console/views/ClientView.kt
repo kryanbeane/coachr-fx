@@ -2,6 +2,7 @@ package org.kryanbeane.coachr.console.views
 
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
+import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 
 class ClientView {
@@ -101,56 +102,11 @@ class ClientView {
             -9
     }
 
-    /**
-     * edit workout plan menu with add workout, edit workout, delete workout
-     *
-     * @return user option
-     */
-    fun editWorkoutPlanMenuView(): Int {
-        println(
-            "1. Add Workout to Plan" + "\n" +
-            "2. Edit a Workout" + "\n" +
-            "3. Delete a Workout" + "\n" +
-            "4. Go Back" + "\n" +
-            "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
-        )
-        val input: String? = readLine()!!
-        return if (input?.toIntOrNull() != null && input.isNotEmpty())
-            input.toInt()
-        else
-            -9
-    }
-
-    /**
-     * edit workout menu with add exercise to workout, edit exercise, delete exercise
-     *
-     * @return user option
-     */
-    fun editWorkoutMenuView(): Int {
-        println(
-            "1. Add Exercise to Workout" + "\n" +
-            "2. Edit an Exercise" + "\n" +
-            "3. Delete an Exercise" + "\n" +
-            "4. Go Back" + "\n" +
-            "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
-        )
-        val input: String? = readLine()!!
-        return if (input?.toIntOrNull() != null && input.isNotEmpty())
-            input.toInt()
-        else
-            -9
-    }
-
     fun searchOrListMenu(): Int {
         println(
-            "1. Add Exercise to Workout" + "\n" +
-            "2. Edit an Exercise" + "\n" +
-            "3. Delete an Exercise" + "\n" +
-            "4. Go Back" + "\n" +
+            "1. Search By Name" + "\n" +
+            "2. List All" + "\n" +
+            "3. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option:" + "\n" +
             "\n"
@@ -163,12 +119,12 @@ class ClientView {
     }
 
     fun listClients(clients: ClientMemStore) {
-        println("List All Clients" + "\n" + "\n")
+        println("Listing All Clients" + "\n" + "\n")
         clients.logClients()
         println()
     }
 
-    fun clientDataIsValid(newClient: ClientModel): Boolean {
+    fun clientDetailsAreValid(newClient: ClientModel): Boolean {
         println()
         println("Enter Client Name: ")
         newClient.fullName = readLine()!!
@@ -180,16 +136,12 @@ class ClientView {
         return newClient.fullName.isNotEmpty() && newClient.emailAddress.isNotEmpty() && newClient.phoneNumber.toString().isNotEmpty()
     }
 
-    fun workoutDataIsValid(newWorkout: WorkoutModel): Boolean {
+    fun clientNameIsValid(client: ClientModel): Boolean {
         println()
-        println("Enter Workout Name: ")
-        newWorkout.name = readLine()!!
-        println("Enter Workout Type: ")
-        newWorkout.type = readLine()!!
+        print("Enter Client Name: ")
+        client.fullName = readLine()!!
 
-        return newWorkout.name.isNotEmpty() && newWorkout.type.isNotEmpty()
+        return client.fullName.isNotEmpty()
     }
-
-
 
 }

@@ -3,17 +3,17 @@ package org.kryanbeane.coachr.console.controllers
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.ClientView
 
 class ClientController {
-    var clients= ClientMemStore()
-    private var clientView = ClientView()
+    var clients = ClientMemStore()
+    var clientView = ClientView()
     private var logger = KotlinLogging.logger{}
-    var currentClient: ClientModel? = null
+    var currClient: ClientModel? = null
+    var workoutController = WorkoutController()
 
     init {
-        logger.info { "Launching Coachr Console Application" }
+        logger.info("Launching Coachr Console Application")
         println("Coachr App Version 1.0")
     }
 
@@ -29,7 +29,7 @@ class ClientController {
             }
             println()
         } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
+        logger.info("Shutting Down Coachr")
     }
 
     fun clientMenu() {
@@ -39,14 +39,14 @@ class ClientController {
             when(input) {
                 1 -> viewClients()
                 2 -> editClients()
-                3 -> deleteClient()
+                3 -> chooseClientToDelete()
                 4 -> start()
                 0 -> println("Exiting App")
                 else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
+        logger.info("Shutting Down Coachr")
     }
 
     fun viewClients() {
@@ -54,8 +54,8 @@ class ClientController {
         do {
             input = clientView.viewClientsMenuView()
             when(input) {
-                1 -> viewAllClients()
-                2 -> println()
+                1 -> clientView.listClients(clients)
+                2 ->
                 3 -> println()
                 4 -> clientMenu()
                 0 -> println("Exiting App")
@@ -63,7 +63,7 @@ class ClientController {
             }
             println()
         } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
+        logger.info("Shutting Down Coachr")
     }
 
     fun editClients() {
@@ -79,66 +79,33 @@ class ClientController {
             }
             println()
         } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
+        logger.info("Shutting Down Coachr")
     }
 
-    fun editWorkoutPlan() {
+    fun chooseClientToDelete() {
         var input: Int
         do {
-            input = clientView.editWorkoutPlanMenuView()
+            input = clientView.searchOrListMenu()
             when(input) {
-                1 -> addWorkoutToClient(currentClient!!)
-                2 -> editWorkout()
-                3 -> println()
-                4 -> editClients()
-                0 -> println("Exiting App")
-                else -> println("Invalid Option")
-            }
-            println()
-        } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
-    }
-
-    fun editWorkout() {
-        var input: Int
-        do {
-            input = clientView.editWorkoutMenuView()
-            when(input) {
-                1 -> println()
-                2 -> println()
-                3 -> println()
-                4 -> editWorkoutPlan()
-                0 -> println("Exiting App")
-                else -> println("Invalid Option")
-            }
-            println()
-        } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
-    }
-
-    fun findOrListMenu() {
-        var input: Int
-        do {
-            input = clientView.findOrListMenuView()
-            when(input) {
-                1 -> findClient()
-                2 -> listClients()
+                1 -> searchClientForSelection()
+                2 -> listClientsForSelection()
                 3 -> clientMenu()
                 0 -> println("Exiting App")
                 else -> println("Invalid Option")
             }
             println()
+            // Check that currClient has been assigned a client object before deleting and resetting curr client
+            if(currClient != null) {
+                clients.deleteClient(currClient!!)
+                currClient = null
+            }
         } while (input != 0)
-        logger.info { "Shutting Down Coachr" }
+        logger.info("Shutting Down Coachr")
     }
 
-    fun viewAllClients() {
-        clientView.listClients(clients)
-    }
-
-    fun addNewClient() {
+    private fun addNewClient() {
         val newClient = ClientModel()
-        if(clientView.clientDataIsValid(newClient)) {
+        if(clientView.clientDetailsAreValid(newClient)) {
             clients.createClient(newClient)
             logger.info("Client Added : [ ${newClient.fullName} ]")
         }
@@ -146,20 +113,25 @@ class ClientController {
             logger.error("Invalid Client Details, please try again")
     }
 
-    fun addWorkoutToClient(client: ClientModel) {
-        if(client != null) {
-            val newWorkout = WorkoutModel()
-            if(clientView.workoutDataIsValid(newWorkout)) {
-                clients.createClientWorkout(client, newWorkout)
-                logger.info("Workout Added : [ ${newWorkout.name} ]")
-            }
-            else
-                logger.error("Invalid Workout Details, please try again")
+    private fun searchClientForSelection() {
+        val foundClient = ClientModel()
+        if(clientView.clientNameIsValid(foundClient)) {
+            currClient = clients.findClient(foundClient.fullName)
+            logger.info("Client ${currClient!!.fullName} Selected")
         }
         else
-            logger.error("No Client Selected")
+            logger.error("Invalid Client Name, please try again")
     }
 
-
+    private fun listClientsForSelection() {
+        val foundClient = ClientModel()
+        clients.logClientNames()
+        if(clientView.clientNameIsValid(foundClient)) {
+            currClient = clients.findClient(foundClient.fullName)
+            logger.info("Client ${currClient!!.fullName} Selected")
+        }
+        else
+            logger.error("Invalid Client Name, please try again")
+    }
 
 }
