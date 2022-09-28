@@ -19,14 +19,14 @@ class ClientMemStore: ClientStore {
     }
 
     /**
-     * find client matching id param
+     * find client matching name param
      *
-     * @param clientId
+     * @param clientName
      * @return client or null
      */
-    override fun findClient(clientId: UUID): ClientModel? {
+    override fun findClient(clientName: String): ClientModel? {
         return clients.find{
-                client -> client.id == clientId
+                client -> client.fullName == clientName
         }
     }
 
@@ -37,9 +37,9 @@ class ClientMemStore: ClientStore {
      * @param workoutId
      * @return workout or null
      */
-    override fun findWorkout(clientId: UUID, workoutId: UUID): WorkoutModel? {
-        return findClient(clientId)?.workoutPlan?.find{
-                workout -> workout.id == workoutId
+    override fun findWorkout(clientName: String, workoutName: String): WorkoutModel? {
+        return findClient(clientName)?.workoutPlan?.find{
+                workout -> workout.name == workoutName
         }
     }
 
@@ -51,9 +51,9 @@ class ClientMemStore: ClientStore {
      * @param exerciseId
      * @return exercise or null
      */
-    override fun findExercise(clientId: UUID, workoutId: UUID, exerciseId: UUID): ExerciseModel? {
-        return findWorkout(clientId, workoutId)?.exercises?.find{
-            exercise -> exercise.id == exerciseId
+    override fun findExercise(clientName: String, workoutName: String, exerciseName: String): ExerciseModel? {
+        return findWorkout(clientName, workoutName)?.exercises?.find{
+            exercise -> exercise.name == exerciseName
         }
     }
 
@@ -64,7 +64,7 @@ class ClientMemStore: ClientStore {
      */
     override fun createClient(client: ClientModel) {
         clients.add(client)
-        logClients(clients)
+        logClients()
     }
 
     /**
@@ -95,7 +95,7 @@ class ClientMemStore: ClientStore {
      * @param client
      */
     override fun updateClientDetails(client: ClientModel) {
-        val foundClient = findClient(client.id)
+        val foundClient = findClient(client.fullName)
         if (foundClient != null) {
             foundClient.fullName = client.fullName
             foundClient.phoneNumber = client.phoneNumber
@@ -109,7 +109,7 @@ class ClientMemStore: ClientStore {
      * @param workout
      */
     override fun updateClientWorkout(client: ClientModel, workout: WorkoutModel) {
-        val foundWorkout = findWorkout(client.id, workout.id)
+        val foundWorkout = findWorkout(client.fullName, workout.name)
         if (foundWorkout != null) {
             foundWorkout.name = workout.name
             foundWorkout.type = foundWorkout.type
@@ -123,7 +123,7 @@ class ClientMemStore: ClientStore {
      * @param exercise
      */
     override fun updateExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel) {
-        val foundExercise = findExercise(client.id, workout.id, exercise.id)
+        val foundExercise = findExercise(client.fullName, workout.name, exercise.name)
         if (foundExercise != null) {
             foundExercise.name = exercise.name
             foundExercise.description = exercise.description
@@ -138,8 +138,8 @@ class ClientMemStore: ClientStore {
      *
      * @param clientList
      */
-    internal fun logClients(clientList: ArrayList<ClientModel>) {
-        clientList.forEach{
+    internal fun logClients() {
+        clients.forEach{
             logger.info {
                 it.fullName + "\n" +
                 "Client ID: " + it.id + "\n" +

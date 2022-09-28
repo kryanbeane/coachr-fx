@@ -5,7 +5,7 @@ import kotlin.collections.ArrayList
 
 data class WorkoutModel(
     var id: UUID = UUID.randomUUID(),
-    var name: String,
-    var type: String,
-    var exercises: ArrayList<ExerciseModel>
+    var name: String = "",
+    var type: String = "",
+    var exercises: ArrayList<ExerciseModel> = arrayListOf()
 )

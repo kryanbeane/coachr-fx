@@ -5,8 +5,8 @@ import kotlin.collections.ArrayList
 
 data class ClientModel(
     var id: UUID = UUID.randomUUID(),
-    var fullName: String,
-    var phoneNumber: Long,
-    var emailAddress: String,
-    var workoutPlan: ArrayList<WorkoutModel>
+    var fullName: String = "",
+    var phoneNumber: Long = 0,
+    var emailAddress: String = "",
+    var workoutPlan: ArrayList<WorkoutModel> = arrayListOf()
 )

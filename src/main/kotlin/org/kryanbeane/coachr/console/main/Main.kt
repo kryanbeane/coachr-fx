@@ -1,11 +1,13 @@
 import mu.KotlinLogging
+import org.kryanbeane.coachr.console.controllers.ClientController
 
 private val logger = KotlinLogging.logger {}
 
 var clients: MutableMap<String, Client> = mutableMapOf()
+var clientController: ClientController = ClientController()
 
 fun main(args: Array<String>) {
-    mainMenuChoices()
+    clientController.start()
 }
 
 fun mainMenuChoices() {
