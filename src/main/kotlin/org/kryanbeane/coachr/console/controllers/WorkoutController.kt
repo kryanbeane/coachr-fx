@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.WorkoutView
+import kotlin.system.exitProcess
 
 class WorkoutController(private var clientContr: ClientController) {
     private var logger = KotlinLogging.logger{}
@@ -25,11 +26,11 @@ class WorkoutController(private var clientContr: ClientController) {
                 3 -> println()
                 4 -> println()
                 0 -> println("Exiting App")
-                else -> println("Invalid Option")
+                else -> println("Shutting Down Coachr")
             }
             println()
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
 
@@ -42,12 +43,12 @@ class WorkoutController(private var clientContr: ClientController) {
                 2 -> println()
                 3 -> println()
                 4 -> editWorkoutPlan()
-                0 -> println("Exiting App")
+                0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
     private fun addWorkoutToClient(client: ClientModel?) {
@@ -72,14 +73,14 @@ class WorkoutController(private var clientContr: ClientController) {
                 1 -> searchWorkoutForSelection()
                 2 -> listWorkoutsForSelection()
                 3 -> clientContr.viewClients()
-                0 -> println("Exiting App")
+                0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
             if(currWorkout != null)
                 workoutView.listWorkout(currWorkout!!)
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
     private fun searchWorkoutForSelection() {

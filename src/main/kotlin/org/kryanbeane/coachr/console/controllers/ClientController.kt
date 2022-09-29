@@ -6,6 +6,7 @@ import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.ClientView
+import kotlin.system.exitProcess
 
 class ClientController {
     var clients = ClientMemStore()
@@ -43,14 +44,14 @@ class ClientController {
             when(input) {
                 1 -> viewClients()
                 2 -> editClients()
-                3 -> chooseClientToDelete()
+                3 -> deleteSelectedClient()
                 4 -> start()
-                0 -> println("Exiting App")
+                0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
     fun viewClients() {
@@ -62,13 +63,12 @@ class ClientController {
                 2 -> println()
                 3 -> println()
                 4 -> clientMenu()
-                0 -> println("Exiting App")
+                0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
-        System.exit(0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
     fun editClients() {
@@ -79,15 +79,15 @@ class ClientController {
                 1 -> println()
                 2 -> workoutController.editWorkoutPlan()
                 3 -> clientMenu()
-                0 -> println("Exiting App")
+                0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
-    fun chooseClientToDelete() {
+    fun deleteSelectedClient() {
         var input: Int
         do {
             input = clientView.searchOrListMenu()
@@ -95,7 +95,7 @@ class ClientController {
                 1 -> searchClientForSelection()
                 2 -> listClientsForSelection()
                 3 -> clientMenu()
-                0 -> println("Exiting App")
+                0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
@@ -105,7 +105,7 @@ class ClientController {
                 currClient = null
             }
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        exitProcess(0)
     }
 
     private fun addNewClient() {
