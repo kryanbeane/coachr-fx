@@ -72,4 +72,16 @@ class WorkoutView {
 
         return workout.name.isNotEmpty()
     }
+
+    fun listWorkout(workout: WorkoutModel) {
+        println("Workout Name: ${workout.name}")
+        println("Workout Type: ${workout.type}")
+        workout.exercises.forEach{
+            println("Exercise Name: ${it.name}")
+            println("Exercise Description: ${it.description}")
+            println("Exercise Sets: ${it.sets}")
+            println("Exercise Reps: ${it.reps}")
+            println("Exercise Reps in Reserve: ${it.repsInReserve}")
+        }
+    }
 }

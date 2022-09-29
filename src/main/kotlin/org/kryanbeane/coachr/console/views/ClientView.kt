@@ -20,9 +20,13 @@ class ClientView {
                     "██║░░╚═╝██║░░██║███████║██║░░╚═╝███████║██████╔╝\n" +
                     "██║░░██╗██║░░██║██╔══██║██║░░██╗██╔══██║██╔══██╗\n" +
                     "╚█████╔╝╚█████╔╝██║░░██║╚█████╔╝██║░░██║██║░░██║\n" +
-                    "░╚════╝░░╚════╝░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝"
+                    "░╚════╝░░╚════╝░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝" +
+                    "\n"
 
         )
+        println()
+        println("M A I N   M E N U")
+        println()
         println(
             "1. Add a Client" + "\n" +
             "2. Client Menu" + "\n" +
@@ -43,6 +47,9 @@ class ClientView {
      * @return user option
      */
     fun clientMenuView(): Int {
+        println()
+        println("C L I E N T   M E N U")
+        println()
         println(
             "1. View Clients" + "\n" +
             "2. Edit a Client" + "\n" +
@@ -65,6 +72,9 @@ class ClientView {
      * @return user option
      */
     fun viewClientsMenuView(): Int {
+        println()
+        println("V I E W   C L I E N T   M E N U")
+        println()
         println(
             "1. View All Clients" + "\n" +
             "2. View a Workout" + "\n" +
@@ -87,6 +97,9 @@ class ClientView {
      * @return user option
      */
     fun editClientMenuView(): Int {
+        println()
+        println("E D I T   C L I E N T   M E N U")
+        println()
         println(
             "1. Edit Client Details" + "\n" +
             "2. Edit Client Workout" + "\n" +
@@ -103,6 +116,9 @@ class ClientView {
     }
 
     fun searchOrListMenu(): Int {
+        println()
+        println("S E A R C H   O R   L I S T")
+        println()
         println(
             "1. Search By Name" + "\n" +
             "2. List All" + "\n" +
@@ -125,6 +141,8 @@ class ClientView {
     }
 
     fun clientDetailsAreValid(newClient: ClientModel): Boolean {
+        println()
+        println("A D D I N G   N E W   C L I E N T")
         println()
         println("Enter Client Name: ")
         newClient.fullName = readLine()!!

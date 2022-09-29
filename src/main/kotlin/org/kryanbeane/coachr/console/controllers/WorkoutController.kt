@@ -18,11 +18,12 @@ class WorkoutController(private var clientContr: ClientController) {
         var input: Int
         do {
             input = workoutView.editWorkoutPlanMenuView()
+            println(currClient)
             when(input) {
                 1 -> addWorkoutToClient(currClient!!)
                 2 -> editWorkout()
                 3 -> println()
-                4 -> editClients()
+                4 -> println()
                 0 -> println("Exiting App")
                 else -> println("Invalid Option")
             }
@@ -76,7 +77,7 @@ class WorkoutController(private var clientContr: ClientController) {
             }
             println()
             if(currWorkout != null)
-                workoutView.showWorkout(currWorkout!!)
+                workoutView.listWorkout(currWorkout!!)
         } while (input != 0)
         logger.info("Shutting Down Coachr")
     }
