@@ -4,7 +4,35 @@ import org.kryanbeane.coachr.console.models.ExerciseModel
 
 class ExerciseView {
 
-    fun exerciseDetailsAreValid(newExercise: ExerciseModel): Boolean {
+    /**
+     * edit workout menu with add exercise to workout, edit exercise, delete exercise
+     *
+     * @return user option
+     */
+    fun editWorkoutMenuView(): Int {
+        println()
+        println(
+            "\n" +
+                    "█▀▀ █▀▄ █ ▀█▀   █░█░█ █▀█ █▀█ █▄▀ █▀█ █░█ ▀█▀   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
+                    "██▄ █▄▀ █ ░█░   ▀▄▀▄▀ █▄█ █▀▄ █░█ █▄█ █▄█ ░█░   █░▀░█ ██▄ █░▀█ █▄█"
+        )
+        println()
+        println(
+            "1. Add Exercise to Workout" + "\n" +
+            "2. Edit an Exercise" + "\n" +
+            "3. Delete an Exercise" + "\n" +
+            "4. Go Back" + "\n" +
+            "0. Exit" + "\n" + "\n" +
+            "Enter an option: "
+        )
+        val input: String? = readLine()!!
+        return if (input?.toIntOrNull() != null && input.isNotEmpty())
+            input.toInt()
+        else
+            -9
+    }
+
+    fun newExerciseDetailsAreValid(newExercise: ExerciseModel): Boolean {
         println()
         println("Enter Exercise Name: ")
         newExercise.name = readLine()!!
