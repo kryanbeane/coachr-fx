@@ -40,15 +40,14 @@ class ClientController {
     }
 
     fun clientMenu() {
-        var input: Int
         do {
-            input = clientView.clientMenuView()
+            val input = clientView.clientMenuView()
             when(input) {
                 1 -> viewClients()
                 2 -> {
                     val client = setCurrentClient()
                     if (client != null)
-                        workoutController.createWorkout(client)
+                        updateClient(client)
                     else
                         println("No Client Selected")
                 }
@@ -63,9 +62,8 @@ class ClientController {
     }
 
     fun viewClients() {
-        var input: Int
         do {
-            input = clientView.viewClientsMenuView()
+            val input = clientView.viewClientsMenuView()
             when(input) {
                 1 -> clientView.listClients(clients)
                 2 -> println("View a Workout")
@@ -79,12 +77,12 @@ class ClientController {
         exitProcess(0)
     }
 
-    fun editClients(client: ClientModel) {
+    fun updateClient(client: ClientModel) {
         var input: Int
         do {
             input = clientView.editClientMenuView()
             when(input) {
-                1 -> println("Edit Client Details")
+                1 -> clientView.updateClientDetails(client)
                 2 -> workoutController.createWorkout(client)
                 3 -> clientMenu()
                 0 -> println("Shutting Down Coachr")

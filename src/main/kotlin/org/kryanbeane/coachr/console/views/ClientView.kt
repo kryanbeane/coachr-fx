@@ -48,7 +48,7 @@ class ClientView {
         println()
         println(
             "1. View Clients" + "\n" +
-            "2. Edit a Client" + "\n" +
+            "2. Update a Client" + "\n" +
             "3. Delete a Client" + "\n" +
             "4. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
@@ -98,13 +98,13 @@ class ClientView {
         println()
         println(
             "\n" +
-                    "█▀▀ █▀▄ █ ▀█▀   █▀▀ █░░ █ █▀▀ █▄░█ ▀█▀   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
-                    "██▄ █▄▀ █ ░█░   █▄▄ █▄▄ █ ██▄ █░▀█ ░█░   █░▀░█ ██▄ █░▀█ █▄█"
+                    "█░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀   █▀▀ █░░ █ █▀▀ █▄░█ ▀█▀   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
+                    "█▄█ █▀▀ █▄▀ █▀█ ░█░ ██▄   █▄▄ █▄▄ █ ██▄ █░▀█ ░█░   █░▀░█ ██▄ █░▀█ █▄█"
         )
         println()
         println(
-            "1. Edit Client Details" + "\n" +
-            "2. Edit Client Workout" + "\n" +
+            "1. Update Client Details" + "\n" +
+            "2. Update Client Workout" + "\n" +
             "3. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option: "
@@ -156,8 +156,15 @@ class ClientView {
         println("Enter Client Email Address: ")
         newClient.emailAddress = readLine()!!
 
+        // Workaround for empty phone number strings cannot be converted to a long
         println("Enter Client Phone Number: ")
-        newClient.phoneNumber = readLine()!!.toLong()
+        val number = readLine()!!
+        if(number != "")
+            newClient.phoneNumber = number.toLong()
+        else {
+            println("Invalid Phone Number")
+            return false
+        }
 
         return newClient.fullName.isNotEmpty() && newClient.emailAddress.isNotEmpty() && newClient.phoneNumber.toString().isNotEmpty()
     }
@@ -170,4 +177,34 @@ class ClientView {
         return client.fullName.isNotEmpty()
     }
 
+    fun updateClientDetails(client: ClientModel) {
+        println()
+        println(
+            "\n" +
+                    "█░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀   █▀▀ █░░ █ █▀▀ █▄░█ ▀█▀\n" +
+                    "█▄█ █▀▀ █▄▀ █▀█ ░█░ ██▄   █▄▄ █▄▄ █ ██▄ █░▀█ ░█░"
+        )
+        println()
+        println("Enter Client Name: ")
+        val name = readLine()!!
+        if (name.isNotEmpty())
+            client.fullName = name
+        else
+            println("Client Name ${client.fullName} Unchanged")
+        println()
+        println("Enter Client Email Address: ")
+        val email = readLine()!!
+        if (email.isNotEmpty())
+            client.emailAddress = email
+        else
+            println("Client Email Address ${client.emailAddress} Unchanged")
+        println()
+        println("Enter Client Phone Number: ")
+        val phoneNumber = readLine()!!
+        if (phoneNumber.isNotEmpty())
+            client.phoneNumber = phoneNumber.toLong()
+        else
+            println("Client Phone Number ${client.phoneNumber} Unchanged")
+        println("Client ${client.fullName} Updated Successfully")
+    }
 }

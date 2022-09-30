@@ -32,7 +32,7 @@ class WorkoutController(clientController: ClientController) {
                     setCurrentWorkout(client)
                     println("Delete a Workout")
                 }
-                4 -> ctrlr.editClients(client)
+                4 -> ctrlr.updateClient(client)
                 0 -> println("Exiting App")
                 else -> println("Shutting Down Coachr")
             }
