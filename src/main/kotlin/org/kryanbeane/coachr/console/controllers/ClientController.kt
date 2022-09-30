@@ -9,14 +9,14 @@ import org.kryanbeane.coachr.console.views.ClientView
 import kotlin.system.exitProcess
 
 class ClientController {
+    private var logger = KotlinLogging.logger{}
     var clients = ClientMemStore()
     var clientView = ClientView()
-    private var logger = KotlinLogging.logger{}
-    var workoutController = WorkoutController(this)
+    private var workoutController = WorkoutController(this)
 
     init {
         logger.info("Launching Coachr Console Application")
-        println("Coachr App Version 1.0")
+        println("Coachr App v1.0.0")
     }
 
     private fun initObjects() {
@@ -29,8 +29,8 @@ class ClientController {
         do {
             input = clientView.mainMenuView()
             when(input) {
-                1 -> addNewClient()
-                2 -> clientMenu()
+                1 -> clientMenu()
+                2 -> clients.logAll()
                 0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
@@ -39,11 +39,11 @@ class ClientController {
         logger.info("\n" + "Shutting Down Coachr")
     }
 
-    fun clientMenu() {
+    private fun clientMenu() {
         do {
             val input = clientView.clientMenuView()
             when(input) {
-                1 -> viewClients()
+                1 -> addNewClient()
                 2 -> {
                     val client = setCurrentClient()
                     if (client != null)
@@ -58,23 +58,8 @@ class ClientController {
                     else
                         println("No Client Selected")
                 }
-                4 -> start()
-                0 -> println("\n" + "Shutting Down Coachr")
-                else -> println("Invalid Option")
-            }
-            println()
-        } while (input != 0)
-        exitProcess(0)
-    }
-
-    fun viewClients() {
-        do {
-            val input = clientView.viewClientsMenuView()
-            when(input) {
-                1 -> clientView.listClients(clients)
-                2 -> println("View a Workout")
-                3 -> println("View a Client's Workouts")
-                4 -> clientMenu()
+                4 -> clients.logClients()
+                5 -> start()
                 0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
@@ -89,8 +74,9 @@ class ClientController {
             input = clientView.editClientMenuView()
             when(input) {
                 1 -> clientView.updateClientDetails(client)
-                2 -> workoutController.createWorkout(client)
-                3 -> clientMenu()
+                2 -> workoutController.editWorkoutPlan(client)
+                3 -> clients.logWorkouts(client)
+                4 -> clientMenu()
                 0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }

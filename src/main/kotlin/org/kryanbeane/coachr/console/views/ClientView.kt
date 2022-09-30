@@ -2,8 +2,7 @@ package org.kryanbeane.coachr.console.views
 
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.models.ExerciseModel
-import org.kryanbeane.coachr.console.models.WorkoutModel
+
 
 class ClientView {
 
@@ -21,8 +20,8 @@ class ClientView {
         )
         println()
         println(
-            "1. Add a Client" + "\n" +
-            "2. Client Menu" + "\n" +
+            "1. Client Menu" + "\n" +
+            "2. View All" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option: "
         )
@@ -47,10 +46,11 @@ class ClientView {
         )
         println()
         println(
-            "1. View Clients" + "\n" +
-            "2. Update a Client" + "\n" +
+            "1. Add a Client" + "\n" +
+            "2. Edit a Client" + "\n" +
             "3. Delete a Client" + "\n" +
-            "4. Go Back" + "\n" +
+            "4. View Clients" + "\n" +
+            "5. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option: "
         )
@@ -104,8 +104,9 @@ class ClientView {
         println()
         println(
             "1. Update Client Details" + "\n" +
-            "2. Edit Client Workout Plan" + "\n" +
-            "3. Go Back" + "\n" +
+            "2. Edit Workout Plan" + "\n" +
+            "3. View Workout Plan" + "\n" +
+            "4. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option: "
         )
@@ -134,12 +135,6 @@ class ClientView {
             input.toInt()
         else
             -9
-    }
-
-    fun listClients(clients: ClientMemStore) {
-        println("Listing All Clients" + "\n" + "\n")
-        clients.logClients()
-        println()
     }
 
     fun newClientDetailsAreValid(newClient: ClientModel): Boolean {

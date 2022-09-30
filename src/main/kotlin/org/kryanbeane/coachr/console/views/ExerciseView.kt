@@ -1,8 +1,6 @@
 package org.kryanbeane.coachr.console.views
 
-import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.ExerciseModel
-import org.kryanbeane.coachr.console.models.WorkoutModel
 
 class ExerciseView {
 
@@ -23,7 +21,8 @@ class ExerciseView {
             "1. Add Exercise to Workout" + "\n" +
             "2. Edit an Exercise" + "\n" +
             "3. Delete an Exercise" + "\n" +
-            "4. Go Back" + "\n" +
+            "4. View Exercises" + "\n" +
+            "5. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option: "
         )

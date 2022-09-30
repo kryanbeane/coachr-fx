@@ -7,11 +7,10 @@ import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.ExerciseView
 import kotlin.system.exitProcess
 
-class ExerciseController(clientController: ClientController, workoutController: WorkoutController) {
+class ExerciseController(private var clientCtrlr: ClientController, private var workoutCtrlr: WorkoutController) {
+    private var clients = clientCtrlr.clients
     private var logger = KotlinLogging.logger{}
-    private var ctrlr = workoutController
     private var exerciseView = ExerciseView()
-    var clients = clientController.clients
 
     fun editWorkout(client: ClientModel, workout: WorkoutModel) {
         var input: Int
@@ -33,7 +32,8 @@ class ExerciseController(clientController: ClientController, workoutController: 
                     else
                         println("No Exercise Selected")
                 }
-                4 -> ctrlr.createWorkout(client)
+                4 -> clients.logExercises(workout)
+                5 -> workoutCtrlr.editWorkoutPlan(client)
                 0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
@@ -79,8 +79,8 @@ class ExerciseController(clientController: ClientController, workoutController: 
         return null
     }
 
-    fun setCurrentExercise(client: ClientModel, workout: WorkoutModel): ExerciseModel? {
-        return when(ctrlr.clientView.searchOrListMenu()) {
+    private fun setCurrentExercise(client: ClientModel, workout: WorkoutModel): ExerciseModel? {
+        return when(clientCtrlr.clientView.searchOrListMenu()) {
             1 -> searchForExercise(client, workout, false)
             2 -> searchForExercise(client, workout, true)
             else -> {

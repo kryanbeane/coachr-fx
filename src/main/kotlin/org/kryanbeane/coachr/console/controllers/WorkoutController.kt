@@ -2,20 +2,17 @@ package org.kryanbeane.coachr.console.controllers
 
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.WorkoutView
 import kotlin.system.exitProcess
 
-class WorkoutController(clientController: ClientController) {
+class WorkoutController(private var clientCtrlr: ClientController) {
+    private var exerciseController = ExerciseController(clientCtrlr, this)
     private var logger = KotlinLogging.logger{}
-    private var ctrlr = clientController
     private var workoutView = WorkoutView()
-    private var exerciseController = ExerciseController(clientController, this)
-    var clients = ctrlr.clients
-    var clientView = ctrlr.clientView
+    private var clients = clientCtrlr.clients
 
-    fun createWorkout(client: ClientModel) {
+    fun editWorkoutPlan(client: ClientModel) {
         var input: Int
         do {
             input = workoutView.editWorkoutPlanMenuView()
@@ -43,7 +40,7 @@ class WorkoutController(clientController: ClientController) {
                         println("No Workout Selected")
 
                 }
-                5 -> ctrlr.updateClient(client)
+                5 -> clientCtrlr.updateClient(client)
                 0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
@@ -53,7 +50,7 @@ class WorkoutController(clientController: ClientController) {
     }
 
     private fun setCurrentWorkout(client: ClientModel): WorkoutModel? {
-        return when(ctrlr.clientView.searchOrListMenu()) {
+        return when(clientCtrlr.clientView.searchOrListMenu()) {
             1 -> searchForWorkout(client, false)
             2 -> searchForWorkout(client, true)
             else -> {
@@ -62,22 +59,6 @@ class WorkoutController(clientController: ClientController) {
             }
         }
     }
-
-//     fun viewWorkout(client: ClientModel) {
-//        var input: Int
-//        do {
-//            input = clientView.searchOrListMenu()
-//            when (input) {
-//                1 -> searchForWorkout(client, false)
-//                2 -> searchForWorkout(client, true)
-//                0 -> println("\n" + "Shutting Down Coachr")
-//                else -> println("Invalid Option")
-//            }
-//            println()
-//            if(currWorkout != null) workoutView.listWorkout(currWorkout!!)
-//        } while (input != 0)
-//        exitProcess(0)
-//    }
 
     private fun createNewWorkout(client: ClientModel) {
         val newWorkout = WorkoutModel()
