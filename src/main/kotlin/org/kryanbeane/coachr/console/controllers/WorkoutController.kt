@@ -9,11 +9,11 @@ import kotlin.system.exitProcess
 
 class WorkoutController(clientController: ClientController) {
     private var logger = KotlinLogging.logger{}
-    var ctrlr = clientController
+    private var ctrlr = clientController
+    private var workoutView = WorkoutView()
+    private var exerciseController = ExerciseController(clientController, this)
     var clients = ctrlr.clients
-    var workoutView = WorkoutView()
     var clientView = ctrlr.clientView
-    var exerciseController = ExerciseController(this)
 
     fun createWorkout(client: ClientModel) {
         var input: Int
@@ -36,23 +36,23 @@ class WorkoutController(clientController: ClientController) {
                         println("No Workout Selected")
                 }
                 4 -> {
-                    setCurrentWorkout(client)
-                    println("Delete a Workout")
+                    val workout = setCurrentWorkout(client)
+                    if (workout != null)
+                        deleteWorkout(client, workout)
+                    else
+                        println("No Workout Selected")
+
                 }
                 5 -> ctrlr.updateClient(client)
-                0 -> println("Exiting App")
-                else -> println("Shutting Down Coachr")
+                0 -> println("\n" + "Shutting Down Coachr")
+                else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
         exitProcess(0)
     }
 
-    fun updateWorkout() {
-
-    }
-
-    fun setCurrentWorkout(client: ClientModel): WorkoutModel? {
+    private fun setCurrentWorkout(client: ClientModel): WorkoutModel? {
         return when(ctrlr.clientView.searchOrListMenu()) {
             1 -> searchForWorkout(client, false)
             2 -> searchForWorkout(client, true)
@@ -70,7 +70,7 @@ class WorkoutController(clientController: ClientController) {
 //            when (input) {
 //                1 -> searchForWorkout(client, false)
 //                2 -> searchForWorkout(client, true)
-//                0 -> println("Shutting Down Coachr")
+//                0 -> println("\n" + "Shutting Down Coachr")
 //                else -> println("Invalid Option")
 //            }
 //            println()
@@ -87,6 +87,14 @@ class WorkoutController(clientController: ClientController) {
         }
         else
             logger.error("Invalid Client Details, please try again")
+    }
+
+    private fun deleteWorkout(client: ClientModel, workout: WorkoutModel) {
+        clients.deleteWorkout(client, workout)
+        if(clients.findWorkout(client.fullName, workout.name) == null)
+            logger.info("Workout Successfully Deleted: ${workout.name}")
+        else
+            logger.error("Workout Deletion Failed, Please Try Again")
     }
 
     private fun searchForWorkout(client: ClientModel, listWorkouts: Boolean): WorkoutModel? {

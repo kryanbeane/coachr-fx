@@ -7,12 +7,11 @@ import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.ExerciseView
 import kotlin.system.exitProcess
 
-class ExerciseController(workoutController: WorkoutController) {
+class ExerciseController(clientController: ClientController, workoutController: WorkoutController) {
     private var logger = KotlinLogging.logger{}
-    var ctrlr = workoutController
-    var exerciseView = ExerciseView()
-    var clientView = ctrlr.clientView
-    private var clients = ctrlr.clients
+    private var ctrlr = workoutController
+    private var exerciseView = ExerciseView()
+    var clients = clientController.clients
 
     fun editWorkout(client: ClientModel, workout: WorkoutModel) {
         var input: Int
@@ -27,9 +26,15 @@ class ExerciseController(workoutController: WorkoutController) {
                     else
                         println("No Exercise Selected")
                 }
-                3 -> println("Delete an Exercise")
+                3 -> {
+                    val exercise = setCurrentExercise(client, workout)
+                    if (exercise != null)
+                        deleteExercise(client, workout, exercise)
+                    else
+                        println("No Exercise Selected")
+                }
                 4 -> ctrlr.createWorkout(client)
-                0 -> println("Shutting Down Coachr")
+                0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
@@ -45,6 +50,14 @@ class ExerciseController(workoutController: WorkoutController) {
         }
         else
             logger.error("Invalid Exercise Details, please try again")
+    }
+
+    private fun deleteExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel) {
+        clients.deleteExercise(workout, exercise)
+        if(clients.findExercise(client.fullName, workout.name, exercise.name) == null)
+            logger.info("Exercise Successfully Deleted: ${exercise.name}")
+        else
+            logger.error("Exercise Deletion Failed, Please Try Again")
     }
 
     private fun searchForExercise(client: ClientModel, workout: WorkoutModel, listExercises: Boolean): ExerciseModel? {

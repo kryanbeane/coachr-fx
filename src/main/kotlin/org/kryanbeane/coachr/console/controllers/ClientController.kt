@@ -31,12 +31,12 @@ class ClientController {
             when(input) {
                 1 -> addNewClient()
                 2 -> clientMenu()
-                0 -> println("Exiting App")
+                0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
         } while (input != 0)
-        logger.info("Shutting Down Coachr")
+        logger.info("\n" + "Shutting Down Coachr")
     }
 
     fun clientMenu() {
@@ -51,9 +51,15 @@ class ClientController {
                     else
                         println("No Client Selected")
                 }
-                3 -> println("Delete a Client")
+                3 -> {
+                    val client = setCurrentClient()
+                    if (client != null)
+                        deleteClient(client)
+                    else
+                        println("No Client Selected")
+                }
                 4 -> start()
-                0 -> println("Shutting Down Coachr")
+                0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
@@ -69,7 +75,7 @@ class ClientController {
                 2 -> println("View a Workout")
                 3 -> println("View a Client's Workouts")
                 4 -> clientMenu()
-                0 -> println("Shutting Down Coachr")
+                0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
@@ -85,7 +91,7 @@ class ClientController {
                 1 -> clientView.updateClientDetails(client)
                 2 -> workoutController.createWorkout(client)
                 3 -> clientMenu()
-                0 -> println("Shutting Down Coachr")
+                0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
             println()
@@ -93,7 +99,7 @@ class ClientController {
         exitProcess(0)
     }
 
-    fun setCurrentClient(): ClientModel? {
+    private fun setCurrentClient(): ClientModel? {
         return when(clientView.searchOrListMenu()) {
             1 -> searchForClient(false)
             2 -> searchForClient(true)
@@ -111,7 +117,15 @@ class ClientController {
             logger.info("Client Added: ${newClient.fullName}")
         }
         else
-            logger.error("Invalid Client Details, please try again")
+            logger.error("Invalid Client Details, Please Try Again")
+    }
+
+    private fun deleteClient(client: ClientModel) {
+        clients.deleteClient(client)
+        if(clients.findClient(client.fullName) == null)
+            logger.info("Client Successfully Deleted: ${client.fullName}")
+        else
+            logger.error("Client Deletion Failed, Please Try Again")
     }
 
     private fun searchForClient(listClients: Boolean): ClientModel? {
