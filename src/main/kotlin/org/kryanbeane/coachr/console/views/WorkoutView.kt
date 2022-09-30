@@ -1,5 +1,6 @@
 package org.kryanbeane.coachr.console.views
 
+import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 
@@ -19,10 +20,11 @@ class WorkoutView {
         )
         println()
         println(
-            "1. Add Workout to Plan" + "\n" +
-            "2. Edit a Workout" + "\n" +
-            "3. Delete a Workout" + "\n" +
-            "4. Go Back" + "\n" +
+            "1. Create a Workout" + "\n" +
+            "2. Update Workout Details" + "\n" +
+            "3. Edit a Workout" + "\n" +
+            "4. Delete a Workout" + "\n" +
+            "5. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
             "Enter an option: "
         )
@@ -68,5 +70,34 @@ class WorkoutView {
             println("Exercise Reps: ${it.reps}")
             println("Exercise Reps in Reserve: ${it.repsInReserve}")
         }
+    }
+
+    fun updateWorkoutDetails(workout: WorkoutModel) {
+        println()
+        println(
+            "\n" +
+                    "█░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀   █░█░█ █▀█ █▀█ █▄▀ █▀█ █░█ ▀█▀   █▀▄ █▀▀ ▀█▀ ▄▀█ █ █░░ █▀\n" +
+                    "█▄█ █▀▀ █▄▀ █▀█ ░█░ ██▄   ▀▄▀▄▀ █▄█ █▀▄ █░█ █▄█ █▄█ ░█░   █▄▀ ██▄ ░█░ █▀█ █ █▄▄ ▄█"
+        )
+        println()
+
+        println("Current Workout Name: ${workout.name}")
+        println("Enter New Workout Name: ")
+        val name = readLine()!!
+        if (name.isNotEmpty())
+            workout.name = name
+        else
+            println("Workout Name ${workout.name} Unchanged")
+        println()
+
+        println("Current Workout Type: ${workout.type}")
+        println("Enter New Workout Type: ")
+        val type = readLine()!!
+        if (type.isNotEmpty())
+            workout.type = type
+        else
+            println("Workout Type ${workout.type} Unchanged")
+        println()
+        println("Client ${workout.name} Updated Successfully")
     }
 }

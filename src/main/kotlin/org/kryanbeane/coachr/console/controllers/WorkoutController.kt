@@ -23,22 +23,33 @@ class WorkoutController(clientController: ClientController) {
                 1 -> createNewWorkout(client)
                 2 -> {
                     val workout = setCurrentWorkout(client)
+                    if(workout != null)
+                        workoutView.updateWorkoutDetails(workout)
+                    else
+                        println("No Workout Selected")
+                }
+                3 -> {
+                    val workout = setCurrentWorkout(client)
                     if (workout != null)
                         exerciseController.editWorkout(client, workout)
                     else
                         println("No Workout Selected")
                 }
-                3 -> {
+                4 -> {
                     setCurrentWorkout(client)
                     println("Delete a Workout")
                 }
-                4 -> ctrlr.updateClient(client)
+                5 -> ctrlr.updateClient(client)
                 0 -> println("Exiting App")
                 else -> println("Shutting Down Coachr")
             }
             println()
         } while (input != 0)
         exitProcess(0)
+    }
+
+    fun updateWorkout() {
+
     }
 
     fun setCurrentWorkout(client: ClientModel): WorkoutModel? {
