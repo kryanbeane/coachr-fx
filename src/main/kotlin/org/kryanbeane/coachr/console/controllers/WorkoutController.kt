@@ -2,29 +2,37 @@ package org.kryanbeane.coachr.console.controllers
 
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientModel
+import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.WorkoutView
 import kotlin.system.exitProcess
 
-class WorkoutController(private var clientContr: ClientController) {
+class WorkoutController(clientController: ClientController) {
     private var logger = KotlinLogging.logger{}
-    private var clients = clientContr.clients
-    private var workoutView = WorkoutView()
-    var workoutPlan = clientContr.currClient?.workoutPlan
-    var currClient = clientContr.currClient
-    var currWorkout: WorkoutModel? = null
-    var clientView = clientContr.clientView
+    var ctrlr = clientController
+    var clients = ctrlr.clients
+    var workoutView = WorkoutView()
+    var clientView = ctrlr.clientView
+    var exerciseController = ExerciseController(this)
 
-    fun editWorkoutPlan() {
+    fun createWorkout(client: ClientModel) {
         var input: Int
         do {
             input = workoutView.editWorkoutPlanMenuView()
-            println(currClient)
             when(input) {
-                1 -> addWorkoutToClient(currClient!!)
-                2 -> editWorkout()
-                3 -> println()
-                4 -> println()
+                1 -> createNewWorkout(client)
+                2 -> {
+                    val workout = setCurrentWorkout(client)
+                    if (workout != null)
+                        exerciseController.editWorkout(client, workout)
+                    else
+                        println("No Workout Selected")
+                }
+                3 -> {
+                    setCurrentWorkout(client)
+                    println("Delete a Workout")
+                }
+                4 -> ctrlr.editClients(client)
                 0 -> println("Exiting App")
                 else -> println("Shutting Down Coachr")
             }
@@ -33,74 +41,60 @@ class WorkoutController(private var clientContr: ClientController) {
         exitProcess(0)
     }
 
-
-    fun editWorkout() {
-        var input: Int
-        do {
-            input = workoutView.editWorkoutMenuView()
-            when(input) {
-                1 -> println()
-                2 -> println()
-                3 -> println()
-                4 -> editWorkoutPlan()
-                0 -> println("Shutting Down Coachr")
-                else -> println("Invalid Option")
+    fun setCurrentWorkout(client: ClientModel): WorkoutModel? {
+        return when(ctrlr.clientView.searchOrListMenu()) {
+            1 -> searchForWorkout(client, false)
+            2 -> searchForWorkout(client, true)
+            else -> {
+                println("Invalid Option")
+                return null
             }
-            println()
-        } while (input != 0)
-        exitProcess(0)
+        }
     }
 
-    private fun addWorkoutToClient(client: ClientModel?) {
-        if(client != null) {
-            val newWorkout = WorkoutModel()
-            if(workoutView.workoutDetailsAreValid(newWorkout)) {
-                clients.createClientWorkout(client, newWorkout)
-                logger.info("Workout Added: ${newWorkout.name}")
-            }
-            else
-                logger.error("Invalid Workout Details, please try again")
+//     fun viewWorkout(client: ClientModel) {
+//        var input: Int
+//        do {
+//            input = clientView.searchOrListMenu()
+//            when (input) {
+//                1 -> searchForWorkout(client, false)
+//                2 -> searchForWorkout(client, true)
+//                0 -> println("Shutting Down Coachr")
+//                else -> println("Invalid Option")
+//            }
+//            println()
+//            if(currWorkout != null) workoutView.listWorkout(currWorkout!!)
+//        } while (input != 0)
+//        exitProcess(0)
+//    }
+
+    private fun createNewWorkout(client: ClientModel) {
+        val newWorkout = WorkoutModel()
+        if(workoutView.newWorkoutDetailsAreValid(newWorkout)) {
+            clients.createClientWorkout(client, newWorkout)
+            logger.info("Client Added: ${newWorkout.name}")
         }
         else
-            logger.error("No Client Selected")
+            logger.error("Invalid Client Details, please try again")
     }
 
-     fun viewWorkout() {
-        var input: Int
-        do {
-            input = clientView.searchOrListMenu()
-            when (input) {
-                1 -> searchWorkoutForSelection()
-                2 -> listWorkoutsForSelection()
-                3 -> clientContr.viewClients()
-                0 -> println("Shutting Down Coachr")
-                else -> println("Invalid Option")
-            }
-            println()
-            if(currWorkout != null)
-                workoutView.listWorkout(currWorkout!!)
-        } while (input != 0)
-        exitProcess(0)
-    }
-
-    private fun searchWorkoutForSelection() {
+    private fun searchForWorkout(client: ClientModel, listWorkouts: Boolean): WorkoutModel? {
         val foundWorkout = WorkoutModel()
+        if(listWorkouts)
+            clients.logWorkoutNames(client)
         if(workoutView.workoutNameIsValid(foundWorkout)) {
-            currWorkout = clients.findWorkout(currClient!!.fullName, foundWorkout.name)
-            logger.info("Workout ${currWorkout!!.name} Selected")
+            val selectedWorkout = clients.findWorkout(client.fullName, foundWorkout.name)
+            return if(selectedWorkout != null) {
+                logger.info("Workout Selected: ${selectedWorkout.name}")
+                selectedWorkout
+            } else {
+                logger.error("Workout not found")
+                null
+            }
         }
         else
             logger.error("Invalid Workout Name, please try again")
+            return null
     }
 
-    private fun listWorkoutsForSelection() {
-        val foundWorkout = WorkoutModel()
-        clients.logWorkoutNames(currClient!!)
-        if(workoutView.workoutNameIsValid(foundWorkout)) {
-            currWorkout = clients.findWorkout(currClient!!.fullName, foundWorkout.name)
-            logger.info("Client ${currWorkout!!.name} Selected")
-        }
-        else
-            logger.error("Invalid Workout Name, please try again")
-    }
 }

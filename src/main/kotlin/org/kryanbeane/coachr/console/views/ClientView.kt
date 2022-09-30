@@ -13,26 +13,18 @@ class ClientView {
      * @return user option
      */
     fun mainMenuView(): Int {
+        println()
         println(
             "\n" +
-                    "░█████╗░░█████╗░░█████╗░░█████╗░██╗░░██╗██████╗░\n" +
-                    "██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║░░██║██╔══██╗\n" +
-                    "██║░░╚═╝██║░░██║███████║██║░░╚═╝███████║██████╔╝\n" +
-                    "██║░░██╗██║░░██║██╔══██║██║░░██╗██╔══██║██╔══██╗\n" +
-                    "╚█████╔╝╚█████╔╝██║░░██║╚█████╔╝██║░░██║██║░░██║\n" +
-                    "░╚════╝░░╚════╝░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝" +
-                    "\n"
-
+                    "█▀▄▀█ ▄▀█ █ █▄░█   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
+                    "█░▀░█ █▀█ █ █░▀█   █░▀░█ ██▄ █░▀█ █▄█"
         )
-        println()
-        println("M A I N   M E N U")
         println()
         println(
             "1. Add a Client" + "\n" +
             "2. Client Menu" + "\n" +
             "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
+            "Enter an option: "
         )
         val input: String? = readLine()!!
         return if (input?.toIntOrNull() != null && input.isNotEmpty())
@@ -48,7 +40,11 @@ class ClientView {
      */
     fun clientMenuView(): Int {
         println()
-        println("C L I E N T   M E N U")
+        println(
+            "\n" +
+                    "█▀▀ █░░ █ █▀▀ █▄░█ ▀█▀   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
+                    "█▄▄ █▄▄ █ ██▄ █░▀█ ░█░   █░▀░█ ██▄ █░▀█ █▄█"
+        )
         println()
         println(
             "1. View Clients" + "\n" +
@@ -56,8 +52,7 @@ class ClientView {
             "3. Delete a Client" + "\n" +
             "4. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
+            "Enter an option: "
         )
         val input: String? = readLine()!!
         return if (input?.toIntOrNull() != null && input.isNotEmpty())
@@ -73,7 +68,11 @@ class ClientView {
      */
     fun viewClientsMenuView(): Int {
         println()
-        println("V I E W   C L I E N T   M E N U")
+        println(
+            "\n" +
+                    "█░█ █ █▀▀ █░█░█   █▀▀ █░░ █ █▀▀ █▄░█ ▀█▀ █▀   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
+                    "▀▄▀ █ ██▄ ▀▄▀▄▀   █▄▄ █▄▄ █ ██▄ █░▀█ ░█░ ▄█   █░▀░█ ██▄ █░▀█ █▄█"
+        )
         println()
         println(
             "1. View All Clients" + "\n" +
@@ -81,8 +80,7 @@ class ClientView {
             "3. View a Client's Workouts" + "\n" +
             "4. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
+            "Enter an option: "
         )
         val input: String? = readLine()!!
         return if (input?.toIntOrNull() != null && input.isNotEmpty())
@@ -98,15 +96,18 @@ class ClientView {
      */
     fun editClientMenuView(): Int {
         println()
-        println("E D I T   C L I E N T   M E N U")
+        println(
+            "\n" +
+                    "█▀▀ █▀▄ █ ▀█▀   █▀▀ █░░ █ █▀▀ █▄░█ ▀█▀   █▀▄▀█ █▀▀ █▄░█ █░█\n" +
+                    "██▄ █▄▀ █ ░█░   █▄▄ █▄▄ █ ██▄ █░▀█ ░█░   █░▀░█ ██▄ █░▀█ █▄█"
+        )
         println()
         println(
             "1. Edit Client Details" + "\n" +
             "2. Edit Client Workout" + "\n" +
             "3. Go Back" + "\n" +
             "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
+            "Enter an option: "
         )
         val input: String? = readLine()!!
         return if (input?.toIntOrNull() != null && input.isNotEmpty())
@@ -117,15 +118,16 @@ class ClientView {
 
     fun searchOrListMenu(): Int {
         println()
-        println("S E A R C H   O R   L I S T")
+        println(
+            "\n" +
+                    "█▀ █▀▀ ▄▀█ █▀█ █▀▀ █░█   █▀█ █▀█   █░░ █ █▀ ▀█▀\n" +
+                    "▄█ ██▄ █▀█ █▀▄ █▄▄ █▀█   █▄█ █▀▄   █▄▄ █ ▄█ ░█░"
+        )
         println()
         println(
             "1. Search By Name" + "\n" +
             "2. List All" + "\n" +
-            "3. Go Back" + "\n" +
-            "0. Exit" + "\n" + "\n" +
-            "Enter an option:" + "\n" +
-            "\n"
+            "Enter an option: "
         )
         val input: String? = readLine()!!
         return if (input?.toIntOrNull() != null && input.isNotEmpty())
@@ -140,14 +142,20 @@ class ClientView {
         println()
     }
 
-    fun clientDetailsAreValid(newClient: ClientModel): Boolean {
+    fun newClientDetailsAreValid(newClient: ClientModel): Boolean {
         println()
-        println("A D D I N G   N E W   C L I E N T")
+        println(
+            "\n" +
+                    "▄▀█ █▀▄ █▀▄   █▀▀ █░░ █ █▀▀ █▄░█ ▀█▀\n" +
+                    "█▀█ █▄▀ █▄▀   █▄▄ █▄▄ █ ██▄ █░▀█ ░█░"
+        )
         println()
         println("Enter Client Name: ")
         newClient.fullName = readLine()!!
+
         println("Enter Client Email Address: ")
         newClient.emailAddress = readLine()!!
+
         println("Enter Client Phone Number: ")
         newClient.phoneNumber = readLine()!!.toLong()
 

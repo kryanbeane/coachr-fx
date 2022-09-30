@@ -12,7 +12,6 @@ class ClientController {
     var clients = ClientMemStore()
     var clientView = ClientView()
     private var logger = KotlinLogging.logger{}
-    var currClient: ClientModel? = null
     var workoutController = WorkoutController(this)
 
     init {
@@ -20,8 +19,12 @@ class ClientController {
         println("Coachr App Version 1.0")
     }
 
-    fun start() {
+    private fun initObjects() {
         populateDummyClients()
+    }
+
+    fun start() {
+        initObjects()
         var input: Int
         do {
             input = clientView.mainMenuView()
@@ -37,14 +40,19 @@ class ClientController {
     }
 
     fun clientMenu() {
-        currClient = null
         var input: Int
         do {
             input = clientView.clientMenuView()
             when(input) {
                 1 -> viewClients()
-                2 -> editClients()
-                3 -> deleteSelectedClient()
+                2 -> {
+                    val client = setCurrentClient()
+                    if (client != null)
+                        workoutController.createWorkout(client)
+                    else
+                        println("No Client Selected")
+                }
+                3 -> println("Delete a Client")
                 4 -> start()
                 0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
@@ -60,8 +68,8 @@ class ClientController {
             input = clientView.viewClientsMenuView()
             when(input) {
                 1 -> clientView.listClients(clients)
-                2 -> println()
-                3 -> println()
+                2 -> println("View a Workout")
+                3 -> println("View a Client's Workouts")
                 4 -> clientMenu()
                 0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
@@ -71,13 +79,13 @@ class ClientController {
         exitProcess(0)
     }
 
-    fun editClients() {
+    fun editClients(client: ClientModel) {
         var input: Int
         do {
             input = clientView.editClientMenuView()
             when(input) {
-                1 -> println()
-                2 -> workoutController.editWorkoutPlan()
+                1 -> println("Edit Client Details")
+                2 -> workoutController.createWorkout(client)
                 3 -> clientMenu()
                 0 -> println("Shutting Down Coachr")
                 else -> println("Invalid Option")
@@ -87,56 +95,43 @@ class ClientController {
         exitProcess(0)
     }
 
-    fun deleteSelectedClient() {
-        var input: Int
-        do {
-            input = clientView.searchOrListMenu()
-            when(input) {
-                1 -> searchClientForSelection()
-                2 -> listClientsForSelection()
-                3 -> clientMenu()
-                0 -> println("Shutting Down Coachr")
-                else -> println("Invalid Option")
+    fun setCurrentClient(): ClientModel? {
+        return when(clientView.searchOrListMenu()) {
+            1 -> searchForClient(false)
+            2 -> searchForClient(true)
+            else -> {
+                println("Invalid Option")
+                return null
             }
-            println()
-            // Check that currClient has been assigned a client object before deleting and resetting curr client
-            if(currClient != null) {
-                clients.deleteClient(currClient!!)
-                currClient = null
-            }
-        } while (input != 0)
-        exitProcess(0)
+        }
     }
 
     private fun addNewClient() {
         val newClient = ClientModel()
-        if(clientView.clientDetailsAreValid(newClient)) {
+        if(clientView.newClientDetailsAreValid(newClient)) {
             clients.createClient(newClient)
-            logger.info("Client Added : [ ${newClient.fullName} ]")
+            logger.info("Client Added: ${newClient.fullName}")
         }
         else
             logger.error("Invalid Client Details, please try again")
     }
 
-    private fun searchClientForSelection() {
+    private fun searchForClient(listClients: Boolean): ClientModel? {
         val foundClient = ClientModel()
+        if(listClients) clients.logClientNames()
         if(clientView.clientNameIsValid(foundClient)) {
-            currClient = clients.findClient(foundClient.fullName)
-            logger.info("Client ${currClient!!.fullName} Selected")
+            val selectedClient = clients.findClient(foundClient.fullName)
+            return if(selectedClient != null) {
+                logger.info("Client Selected: ${selectedClient.fullName}")
+                selectedClient
+            } else {
+                logger.error("Client not found")
+                null
+            }
         }
         else
             logger.error("Invalid Client Name, please try again")
-    }
-
-    private fun listClientsForSelection() {
-        val foundClient = ClientModel()
-        clients.logClientNames()
-        if(clientView.clientNameIsValid(foundClient)) {
-            currClient = clients.findClient(foundClient.fullName)
-            logger.info("Client ${currClient!!.fullName} Selected")
-        }
-        else
-            logger.error("Invalid Client Name, please try again")
+            return null
     }
 
     private fun populateDummyClients() {
