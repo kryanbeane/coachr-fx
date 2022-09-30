@@ -249,4 +249,38 @@ class ClientMemStore: ClientStore {
             }
         }
     }
+
+    /**
+     * log all recursively
+     *
+     */
+    internal fun logAll() {
+        clients.forEach{
+            logger.info {
+                it.fullName + "\n" +
+                "Client ID: " + it.id + "\n" +
+                "Email Address: " + it.emailAddress + "\n" +
+                "Phone Number: " + it.phoneNumber + "\n" +
+                "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
+            }
+            it.workoutPlan.forEach{
+                logger.info {
+                    it.name + "\n" +
+                    "Workout ID: " + it.id + "\n" +
+                    "Workout Type: " + it.type + "\n" +
+                    "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
+                }
+                it.exercises.forEach{
+                    logger.info {
+                        it.name + "\n" +
+                        "Exercise ID: " + it.id + "\n" +
+                        "Exercise Description: " + it.description + "\n" +
+                        "Sets: " + it.sets + "\n" +
+                        "Reps: " + it.reps + "\n" +
+                        "Reps in Reserve: " + it.repsInReserve + "\n" + "\n"
+                    }
+                }
+            }
+        }
+    }
 }

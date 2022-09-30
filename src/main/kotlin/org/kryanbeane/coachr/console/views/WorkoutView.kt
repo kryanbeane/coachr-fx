@@ -1,7 +1,5 @@
 package org.kryanbeane.coachr.console.views
 
-import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 
 class WorkoutView {
@@ -58,18 +56,6 @@ class WorkoutView {
         workout.name = readLine()!!
 
         return workout.name.isNotEmpty()
-    }
-
-    fun listWorkout(workout: WorkoutModel) {
-        println("Workout Name: ${workout.name}")
-        println("Workout Type: ${workout.type}")
-        workout.exercises.forEach{
-            println("Exercise Name: ${it.name}")
-            println("Exercise Description: ${it.description}")
-            println("Exercise Sets: ${it.sets}")
-            println("Exercise Reps: ${it.reps}")
-            println("Exercise Reps in Reserve: ${it.repsInReserve}")
-        }
     }
 
     fun updateWorkoutDetails(workout: WorkoutModel) {
