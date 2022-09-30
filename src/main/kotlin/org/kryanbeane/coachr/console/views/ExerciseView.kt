@@ -1,6 +1,8 @@
 package org.kryanbeane.coachr.console.views
 
+import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.ExerciseModel
+import org.kryanbeane.coachr.console.models.WorkoutModel
 
 class ExerciseView {
 
@@ -50,5 +52,63 @@ class ExerciseView {
                 newExercise.sets.toString().isNotEmpty() &&
                 newExercise.reps.toString().isNotEmpty() &&
                 newExercise.repsInReserve.toString().isNotEmpty()
+    }
+
+    fun updateExerciseDetails(exercise: ExerciseModel) {
+        println(
+            "\n" + "\n" +
+                    "█░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀   █▀▀ ▀▄▀ █▀▀ █▀█ █▀▀ █ █▀ █▀▀   █▀▄ █▀▀ ▀█▀ ▄▀█ █ █░░ █▀\n" +
+                    "█▄█ █▀▀ █▄▀ █▀█ ░█░ ██▄   ██▄ █░█ ██▄ █▀▄ █▄▄ █ ▄█ ██▄   █▄▀ ██▄ ░█░ █▀█ █ █▄▄ ▄█" + "\n"
+        )
+
+        println("\n" + "Current Exercise Name: " + exercise.name)
+        println("Enter New Exercise Name: ")
+        val name = readLine()!!
+        if (name.isNotEmpty())
+            exercise.name = name
+        else
+            println("Exercise Name ${exercise.name} Unchanged" + "\n")
+
+        println("\n" + "Current Exercise Description: " + exercise.description)
+        println("Enter New Exercise Description: ")
+        val desc = readLine()!!
+        if (desc.isNotEmpty())
+            exercise.description = desc
+        else
+            println("Exercise Description Unchanged")
+
+        println("\n" + "Current Exercise Sets: " + exercise.sets)
+        println("Enter New Exercise Sets: ")
+        val sets = readLine()!!
+        if (sets.isNotEmpty())
+            exercise.sets = sets.toInt()
+        else
+            println("Exercise Sets ${exercise.sets} Unchanged" + "\n")
+
+        println("\n" + "Current Exercise Reps: " + exercise.sets)
+        println("Enter New Exercise Reps: ")
+        val reps = readLine()!!
+        if (reps.isNotEmpty())
+            exercise.sets = reps.toInt()
+        else
+            println("Exercise Reps ${exercise.reps} Unchanged" + "\n")
+
+        println("\n" + "Current Exercise Reps in Reserve: " + exercise.repsInReserve)
+        println("Enter New Exercise Reps in Reserve: ")
+        val rir = readLine()!!
+        if (rir.isNotEmpty())
+            exercise.sets = rir.toInt()
+        else
+            println("Exercise Reps in Reserve ${exercise.repsInReserve} Unchanged" + "\n")
+
+        println("Exercise ${exercise.name} Updated Successfully")
+    }
+
+    fun exerciseNameIsValid(exercise: ExerciseModel): Boolean {
+        println()
+        println("Enter Exercise Name: ")
+        exercise.name = readLine()!!
+
+        return exercise.name.isNotEmpty()
     }
 }

@@ -19,11 +19,14 @@ class ExerciseController(workoutController: WorkoutController) {
         do {
             input = exerciseView.editWorkoutMenuView()
             when(input) {
-                1 -> {
-                    println("Create Exercise")
-                    createNewExercise(workout)
+                1 -> createNewExercise(workout)
+                2 -> {
+                    val exercise = setCurrentExercise(client,  workout)
+                    if (exercise != null)
+                        exerciseView.updateExerciseDetails(exercise)
+                    else
+                        println("No Exercise Selected")
                 }
-                2 -> println("Edit an Exercise")
                 3 -> println("Delete an Exercise")
                 4 -> ctrlr.createWorkout(client)
                 0 -> println("Shutting Down Coachr")
@@ -42,5 +45,35 @@ class ExerciseController(workoutController: WorkoutController) {
         }
         else
             logger.error("Invalid Exercise Details, please try again")
+    }
+
+    private fun searchForExercise(client: ClientModel, workout: WorkoutModel, listExercises: Boolean): ExerciseModel? {
+        val foundExercise = ExerciseModel()
+        if(listExercises)
+            clients.logExerciseNames(workout)
+        if(exerciseView.exerciseNameIsValid(foundExercise)) {
+            val selectedExercise = clients.findExercise(client.fullName, workout.name, foundExercise.name)
+            return if(selectedExercise != null) {
+                logger.info("Exercise Selected: ${selectedExercise.name}")
+                selectedExercise
+            } else {
+                logger.error("Exercise not found")
+                null
+            }
+        }
+        else
+            logger.error("Invalid Exercise Name, please try again")
+        return null
+    }
+
+    fun setCurrentExercise(client: ClientModel, workout: WorkoutModel): ExerciseModel? {
+        return when(ctrlr.clientView.searchOrListMenu()) {
+            1 -> searchForExercise(client, workout, false)
+            2 -> searchForExercise(client, workout, true)
+            else -> {
+                println("Invalid Option")
+                return null
+            }
+        }
     }
 }
