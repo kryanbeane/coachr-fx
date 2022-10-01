@@ -1,5 +1,6 @@
 package org.kryanbeane.coachr.console.controllers
 
+import com.google.i18n.phonenumbers.Phonenumber
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
@@ -19,10 +20,18 @@ class ClientController {
         println("Coachr App v1.0.0")
     }
 
+    /**
+     * initialize some testing clients with workouts and exercises pre made
+     *
+     */
     private fun initObjects() {
         populateDummyClients()
     }
 
+    /**
+     * main menu, allows user to enter client menu, list all clients, or exit
+     *
+     */
     fun start() {
         initObjects()
         var input: Int
@@ -39,20 +48,24 @@ class ClientController {
         logger.info("\n" + "Shutting Down Coachr")
     }
 
+    /**
+     * allows user to add, update, delete, list clients, go back and exit
+     *
+     */
     private fun clientMenu() {
         do {
             val input = clientView.clientMenuView()
             when(input) {
                 1 -> addNewClient()
                 2 -> {
-                    val client = setCurrentClient()
+                    val client = setCurrentClientMenu()
                     if (client != null)
-                        updateClient(client)
+                        updateClientMenu(client)
                     else
                         println("No Client Selected")
                 }
                 3 -> {
-                    val client = setCurrentClient()
+                    val client = setCurrentClientMenu()
                     if (client != null)
                         deleteClient(client)
                     else
@@ -68,13 +81,18 @@ class ClientController {
         exitProcess(0)
     }
 
-    fun updateClient(client: ClientModel) {
+    /**
+     * allows user to update client parameter details, edit workout plan, view workouts, go back, and exit
+     *
+     * @param client
+     */
+    fun updateClientMenu(client: ClientModel) {
         var input: Int
         do {
             input = clientView.editClientMenuView()
             when(input) {
                 1 -> clientView.updateClientDetails(client)
-                2 -> workoutController.editWorkoutPlan(client)
+                2 -> workoutController.editWorkoutPlanMenu(client)
                 3 -> clients.logWorkouts(client)
                 4 -> clientMenu()
                 0 -> println("\n" + "Shutting Down Coachr")
@@ -85,7 +103,12 @@ class ClientController {
         exitProcess(0)
     }
 
-    private fun setCurrentClient(): ClientModel? {
+    /**
+     * menu to allow users to select a client from a list or search for clients by name and returns found client or null
+     *
+     * @return ClientModel or Null
+     */
+    private fun setCurrentClientMenu(): ClientModel? {
         return when(clientView.searchOrListMenu()) {
             1 -> searchForClient(false)
             2 -> searchForClient(true)
@@ -96,6 +119,10 @@ class ClientController {
         }
     }
 
+    /**
+     * allows user to create a new client
+     *
+     */
     private fun addNewClient() {
         val newClient = ClientModel()
         if(clientView.newClientDetailsAreValid(newClient)) {
@@ -106,6 +133,11 @@ class ClientController {
             logger.error("Invalid Client Details, Please Try Again")
     }
 
+    /**
+     * allows user to delete the parameter client
+     *
+     * @param client to be deleted
+     */
     private fun deleteClient(client: ClientModel) {
         clients.deleteClient(client)
         if(clients.findClient(client.fullName) == null)
@@ -114,6 +146,12 @@ class ClientController {
             logger.error("Client Deletion Failed, Please Try Again")
     }
 
+    /**
+     * allows user to search for a client based on listing or searching by name
+     *
+     * @param listClients boolean option
+     * @return found client or null
+     */
     private fun searchForClient(listClients: Boolean): ClientModel? {
         val foundClient = ClientModel()
         if(listClients) clients.logClientNames()
@@ -132,11 +170,15 @@ class ClientController {
             return null
     }
 
+    /**
+     * populates client memory store with some test client data
+     *
+     */
     private fun populateDummyClients() {
         clients.createClient(
             ClientModel(
                 fullName = "Dominik",
-                phoneNumber = "0834232123".toLong(),
+                phoneNumber = Phonenumber.PhoneNumber().setRawInput("+353871234567"),
                 emailAddress = "dominil@gmail.com",
                 workoutPlan = arrayListOf(
                     WorkoutModel(
@@ -178,7 +220,7 @@ class ClientController {
         clients.createClient(
             ClientModel(
                 fullName = "Denis",
-                phoneNumber = "08512121212".toLong(),
+                phoneNumber = Phonenumber.PhoneNumber().setRawInput("+353837654321"),
                 emailAddress = "denis@gmail.com",
                 workoutPlan = arrayListOf(
                     WorkoutModel(

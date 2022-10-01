@@ -12,35 +12,40 @@ class WorkoutController(private var clientCtrlr: ClientController) {
     private var workoutView = WorkoutView()
     private var clients = clientCtrlr.clients
 
-    fun editWorkoutPlan(client: ClientModel) {
+    /**
+     * menu to allow users to create a new workout, update workout details, edit a workout, delete a workout, or view workouts
+     *
+     * @param client who owns the workout
+     */
+    fun editWorkoutPlanMenu(client: ClientModel) {
         var input: Int
         do {
             input = workoutView.editWorkoutPlanMenuView()
             when(input) {
                 1 -> createNewWorkout(client)
                 2 -> {
-                    val workout = setCurrentWorkout(client)
+                    val workout = setCurrentWorkoutMenu(client)
                     if(workout != null)
                         workoutView.updateWorkoutDetails(workout)
                     else
                         println("No Workout Selected")
                 }
                 3 -> {
-                    val workout = setCurrentWorkout(client)
+                    val workout = setCurrentWorkoutMenu(client)
                     if (workout != null)
-                        exerciseController.editWorkout(client, workout)
+                        exerciseController.editWorkoutMenu(client, workout)
                     else
                         println("No Workout Selected")
                 }
                 4 -> {
-                    val workout = setCurrentWorkout(client)
+                    val workout = setCurrentWorkoutMenu(client)
                     if (workout != null)
                         deleteWorkout(client, workout)
                     else
                         println("No Workout Selected")
 
                 }
-                5 -> clientCtrlr.updateClient(client)
+                5 -> clientCtrlr.updateClientMenu(client)
                 0 -> println("\n" + "Shutting Down Coachr")
                 else -> println("Invalid Option")
             }
@@ -49,7 +54,13 @@ class WorkoutController(private var clientCtrlr: ClientController) {
         exitProcess(0)
     }
 
-    private fun setCurrentWorkout(client: ClientModel): WorkoutModel? {
+    /**
+     * menu to allow users to search for a workout by listing all workouts or searching by workout name
+     *
+     * @param client who owns the workout
+     * @return found workout or null
+     */
+    private fun setCurrentWorkoutMenu(client: ClientModel): WorkoutModel? {
         return when(clientCtrlr.clientView.searchOrListMenu()) {
             1 -> searchForWorkout(client, false)
             2 -> searchForWorkout(client, true)
@@ -60,6 +71,11 @@ class WorkoutController(private var clientCtrlr: ClientController) {
         }
     }
 
+    /**
+     * allows users to create a net workout
+     *
+     * @param client who owns the workout plan
+     */
     private fun createNewWorkout(client: ClientModel) {
         val newWorkout = WorkoutModel()
         if(workoutView.newWorkoutDetailsAreValid(newWorkout)) {
@@ -70,6 +86,12 @@ class WorkoutController(private var clientCtrlr: ClientController) {
             logger.error("Invalid Client Details, please try again")
     }
 
+    /**
+     * allows users to delete a workout
+     *
+     * @param client who owns the workout plan
+     * @param workout to delete
+     */
     private fun deleteWorkout(client: ClientModel, workout: WorkoutModel) {
         clients.deleteWorkout(client, workout)
         if(clients.findWorkout(client.fullName, workout.name) == null)
@@ -78,6 +100,13 @@ class WorkoutController(private var clientCtrlr: ClientController) {
             logger.error("Workout Deletion Failed, Please Try Again")
     }
 
+    /**
+     * allows users to search for a workout by name or by listing
+     *
+     * @param client who owns the workout plan
+     * @param listWorkouts if true, list all workouts, else search for a workout by name
+     * @return found workout or null
+     */
     private fun searchForWorkout(client: ClientModel, listWorkouts: Boolean): WorkoutModel? {
         val foundWorkout = WorkoutModel()
         if(listWorkouts)

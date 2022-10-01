@@ -173,7 +173,7 @@ class ClientMemStore: ClientStore {
                 it.fullName + "\n" +
                 "Client ID: " + it.id + "\n" +
                 "Email Address: " + it.emailAddress + "\n" +
-                "Phone Number: " + it.phoneNumber + "\n" +
+                "Phone Number: " + it.phoneNumber.rawInput + "\n" +
                 "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
             }
         }
@@ -260,7 +260,7 @@ class ClientMemStore: ClientStore {
                 it.fullName + "\n" +
                 "Client ID: " + it.id + "\n" +
                 "Email Address: " + it.emailAddress + "\n" +
-                "Phone Number: " + it.phoneNumber + "\n" +
+                "Phone Number: " + it.phoneNumber.rawInput + "\n" +
                 "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
             }
             it.workoutPlan.forEach{

@@ -33,6 +33,12 @@ class ExerciseView {
             -9
     }
 
+    /**
+     * validate exercise details fro user input
+     *
+     * @param newExercise exercise object
+     * @return true if valid, false if not
+     */
     fun newExerciseDetailsAreValid(newExercise: ExerciseModel): Boolean {
         println()
         println("Enter Exercise Name: ")
@@ -53,6 +59,11 @@ class ExerciseView {
                 newExercise.repsInReserve.toString().isNotEmpty()
     }
 
+    /**
+     * update exercise details based on user input
+     *
+     * @param exercise exercise object
+     */
     fun updateExerciseDetails(exercise: ExerciseModel) {
         println(
             "\n" + "\n" +
@@ -103,6 +114,12 @@ class ExerciseView {
         println("Exercise ${exercise.name} Updated Successfully")
     }
 
+    /**
+     * validate exercise name from user input
+     *
+     * @param exercise exercise object
+     * @return true if valid, false if not
+     */
     fun exerciseNameIsValid(exercise: ExerciseModel): Boolean {
         println()
         println("Enter Exercise Name: ")
