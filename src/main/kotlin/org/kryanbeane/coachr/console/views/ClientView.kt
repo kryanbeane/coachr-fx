@@ -7,6 +7,7 @@ import org.kryanbeane.coachr.console.models.ClientModel
 
 
 class ClientView {
+    private val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
 
     /**
      * main menu with add clients, client menu
@@ -156,6 +157,12 @@ class ClientView {
         return newClient.fullName.isNotEmpty() && newClient.emailAddress.isNotEmpty() && newClient.phoneNumber.toString().isNotEmpty()
     }
 
+    /**
+     * validate client name based on user input
+     *
+     * @param client
+     * @return
+     */
     fun clientNameIsValid(client: ClientModel): Boolean {
         print("\n" + "Enter Client Name: ")
         client.fullName = readLine()!!
@@ -163,6 +170,11 @@ class ClientView {
         return client.fullName.isNotEmpty()
     }
 
+    /**
+     * updates client details based on user input & validates email address and phone number
+     *
+     * @param client to be updated
+     */
     fun updateClientDetails(client: ClientModel) {
         println()
         println(
@@ -201,8 +213,6 @@ class ClientView {
 
         println("Client ${client.fullName} Updated Successfully")
     }
-
-    private val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
 
     /**
      * validate email address based on regex pattern to include the pattern <text>@<text>.<text>

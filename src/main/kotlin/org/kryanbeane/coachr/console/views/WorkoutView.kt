@@ -50,6 +50,12 @@ class WorkoutView {
         return newWorkout.name.isNotEmpty() || newWorkout.type.isNotEmpty()
     }
 
+    /**
+     * validate workout name based on user input
+     *
+     * @param workout to be validated
+     * @return true if valid, false if not
+     */
     fun workoutNameIsValid(workout: WorkoutModel): Boolean {
         println()
         println("Enter Workout Name: ")
@@ -58,6 +64,11 @@ class WorkoutView {
         return workout.name.isNotEmpty()
     }
 
+    /**
+     * update workout details based on user input
+     *
+     * @param workout to be updated
+     */
     fun updateWorkoutDetails(workout: WorkoutModel) {
         println()
         println(
