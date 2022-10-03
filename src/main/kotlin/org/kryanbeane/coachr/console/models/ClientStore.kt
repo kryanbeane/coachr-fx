@@ -1,7 +1,7 @@
 package org.kryanbeane.coachr.console.models
 
 interface ClientStore {
-    fun findAll(): ArrayList<ClientModel>
+    fun findAllClients(): ArrayList<ClientModel>
     fun findClient(clientName: String): ClientModel?
     fun findWorkout(clientName: String, workoutName: String): WorkoutModel?
     fun findExercise(clientName: String, workoutName: String, exerciseName: String): ExerciseModel?

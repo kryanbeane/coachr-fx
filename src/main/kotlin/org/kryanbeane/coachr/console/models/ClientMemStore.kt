@@ -52,7 +52,7 @@ class ClientMemStore(
      *
      * @return client list
      */
-    override fun findAll(): ArrayList<ClientModel> {
+    override fun findAllClients(): ArrayList<ClientModel> {
         val clientList: ArrayList<ClientModel> = arrayListOf()
         val allDocuments = clientsCol.find()
         for (doc in allDocuments) {
@@ -239,7 +239,7 @@ class ClientMemStore(
      * @param clientList
      */
     internal fun logClients() {
-        val clients = findAll()
+        val clients = findAllClients()
         clients.forEach{
             println(it.fullName)
             println("Email Address: ${it.emailAddress}")
@@ -252,7 +252,7 @@ class ClientMemStore(
      * log all client names for use of client selection
      */
     internal fun logClientNames() {
-        val clients = findAll()
+        val clients = findAllClients()
         clients.forEachIndexed { index, client ->
             println("$index. ${client.fullName}")
         }
@@ -313,7 +313,7 @@ class ClientMemStore(
      *
      */
     internal fun logAll() {
-        val clients = findAll()
+        val clients = findAllClients()
         clients.forEach{ it ->
             println(it.fullName)
             println("Email Address: ${it.emailAddress}")

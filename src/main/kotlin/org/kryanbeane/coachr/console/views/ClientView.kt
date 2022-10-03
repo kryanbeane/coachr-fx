@@ -2,7 +2,6 @@ package org.kryanbeane.coachr.console.views
 
 import org.kryanbeane.coachr.console.models.ClientModel
 
-
 class ClientView {
     private val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
 

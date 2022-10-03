@@ -62,8 +62,8 @@ class ClientMemStoreTest {
     }
 
     @Test
-    fun findAll() {
-        val clientList = db.findAll()
+    fun findAllClients() {
+        val clientList = db.findAllClients()
         assertEquals(1, clientList.size)
         assertEquals(testClient, clientList[0])
     }
