@@ -2,16 +2,13 @@ package org.kryanbeane.coachr.console.controllers
 
 import com.google.i18n.phonenumbers.Phonenumber
 import mu.KotlinLogging
-import org.kryanbeane.coachr.console.models.ClientMemStore
-import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.models.ExerciseModel
-import org.kryanbeane.coachr.console.models.WorkoutModel
+import org.kryanbeane.coachr.console.models.*
 import org.kryanbeane.coachr.console.views.ClientView
 import kotlin.system.exitProcess
 
 class ClientController {
     private var logger = KotlinLogging.logger{}
-    var clients = ClientMemStore()
+    var clients = ClientJSONStore()
     var clientView = ClientView()
     private var workoutController = WorkoutController(this)
 

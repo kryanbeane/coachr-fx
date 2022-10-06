@@ -1,0 +1,105 @@
+[
+  {
+    "id": "8a171119-4872-4044-a674-0352f63d434a",
+    "fullName": "Dominik",
+    "phoneNumber": {
+      "hasCountryCode": false,
+      "countryCode_": 0,
+      "hasNationalNumber": false,
+      "nationalNumber_": 0,
+      "hasExtension": false,
+      "extension_": "",
+      "hasItalianLeadingZero": false,
+      "italianLeadingZero_": false,
+      "hasNumberOfLeadingZeros": false,
+      "numberOfLeadingZeros_": 1,
+      "hasRawInput": true,
+      "rawInput_": "+353871234567",
+      "hasCountryCodeSource": false,
+      "countryCodeSource_": "UNSPECIFIED",
+      "hasPreferredDomesticCarrierCode": false,
+      "preferredDomesticCarrierCode_": ""
+    },
+    "emailAddress": "dominil@gmail.com",
+    "workoutPlan": [
+      {
+        "id": "710eed96-dc81-4670-828d-8f5508f21d63",
+        "name": "Push A",
+        "type": "Chest, Shoulders \u0026 Triceps",
+        "exercises": [
+          {
+            "id": "52e75403-a59d-46c8-8379-482632e08871",
+            "name": "Bench Press",
+            "description": "Retract scapulae, arch your back and use leg drive. Maintain stability by engaging your lats throughout",
+            "sets": 5,
+            "reps": 8,
+            "repsInReserve": 1
+          },
+          {
+            "id": "c8d2ea18-7568-46d5-8a44-9de63fb036bf",
+            "name": "Overhead Press",
+            "description": "Brace your core, squeeze your glutes, and drive the bar upwards",
+            "sets": 5,
+            "reps": 15,
+            "repsInReserve": 2
+          }
+        ]
+      },
+      {
+        "id": "edf645b5-717c-46ea-b090-a2a481aa7b08",
+        "name": "Legs A",
+        "type": "Quads, Hamstrings and Calves",
+        "exercises": [
+          {
+            "id": "62b0177f-a940-44e9-9f95-2109aa4e457b",
+            "name": "Squat",
+            "description": "Rest the bar on your traps, brace your core, and begin by hinging at the hips and squatting bellow parallel before squatting the weight upwards",
+            "sets": 5,
+            "reps": 5,
+            "repsInReserve": 8
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "5fb0b272-80fa-41a9-aef4-ac724ee772aa",
+    "fullName": "Denis",
+    "phoneNumber": {
+      "hasCountryCode": false,
+      "countryCode_": 0,
+      "hasNationalNumber": false,
+      "nationalNumber_": 0,
+      "hasExtension": false,
+      "extension_": "",
+      "hasItalianLeadingZero": false,
+      "italianLeadingZero_": false,
+      "hasNumberOfLeadingZeros": false,
+      "numberOfLeadingZeros_": 1,
+      "hasRawInput": true,
+      "rawInput_": "+353837654321",
+      "hasCountryCodeSource": false,
+      "countryCodeSource_": "UNSPECIFIED",
+      "hasPreferredDomesticCarrierCode": false,
+      "preferredDomesticCarrierCode_": ""
+    },
+    "emailAddress": "denis@gmail.com",
+    "workoutPlan": [
+      {
+        "id": "d3dea5aa-d8e2-464c-a918-3a0b41c4ff3b",
+        "name": "Upper Body",
+        "type": "Chest, Shoulders \u0026 Back",
+        "exercises": [
+          {
+            "id": "613d9dae-b1b1-4fd2-84fe-936a326d7e87",
+            "name": "Seated High Row",
+            "description": "Sit on bench, brace and pull elbow towards your back pocket to engage the iliac(lower) lat",
+            "sets": 5,
+            "reps": 8,
+            "repsInReserve": 1
+          }
+        ]
+      }
+    ]
+  }
+]
