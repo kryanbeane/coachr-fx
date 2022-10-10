@@ -1,21 +1,36 @@
 package org.kryanbeane.coachr.console.models
 
+import com.mongodb.client.*
 import mu.KotlinLogging
 import java.util.*
 import kotlin.collections.ArrayList
+import org.litote.kmongo.*
+import io.github.cdimascio.dotenv.Dotenv
 
 private val logger = KotlinLogging.logger {}
 
+private fun initializeMongoConnection(): MongoCollection<ClientModel> {
+    val client =  KMongo.createClient("mongodb+srv://${Dotenv.load().get("USER_NAME")}:${Dotenv.load().get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")
+    val database = client.getDatabase("coachr-client-db")
+    return database.getCollection<ClientModel>("coach-clients")
+}
+
 class ClientMemStore: ClientStore {
+    private val clientsCol = initializeMongoConnection()
     private val clients = ArrayList<ClientModel>()
 
     /**
-     * find all clients in client arraylist
+     * find all clients in client db
      *
      * @return client list
      */
-    override fun findAll(): List<ClientModel> {
-        return clients
+    override fun findAll(): ArrayList<ClientModel> {
+        val clientList: ArrayList<ClientModel> = arrayListOf()
+        val allDocuments = clientsCol.find()
+        for (doc in allDocuments) {
+            clientList.add(doc)
+        }
+        return clientList
     }
 
     /**
@@ -25,20 +40,19 @@ class ClientMemStore: ClientStore {
      * @return client or null
      */
     override fun findClient(clientName: String): ClientModel? {
-        return clients.find{
-                client -> client.fullName == clientName
-        }
+        return clientsCol.findOne {ClientModel::fullName eq clientName}
     }
 
     /**
-     * find workout matching workoutId param
+     * find workout matching name param
      *
-     * @param clientId
-     * @param workoutId
-     * @return workout or null
+     * @param clientName
+     * @param workoutName
+     * @return found workout or null
      */
     override fun findWorkout(clientName: String, workoutName: String): WorkoutModel? {
-        return findClient(clientName)?.workoutPlan?.find{
+        val client = findClient(clientName)
+        return client!!.workoutPlan.find {
                 workout -> workout.name == workoutName
         }
     }
@@ -52,7 +66,8 @@ class ClientMemStore: ClientStore {
      * @return exercise or null
      */
     override fun findExercise(clientName: String, workoutName: String, exerciseName: String): ExerciseModel? {
-        return findWorkout(clientName, workoutName)?.exercises?.find{
+        val workout = findWorkout(clientName, workoutName)
+        return workout!!.exercises.find{
             exercise -> exercise.name == exerciseName
         }
     }
@@ -62,9 +77,11 @@ class ClientMemStore: ClientStore {
      *
      * @param client
      */
-    override fun createClient(client: ClientModel) {
-        clients.add(client)
-        logClients()
+    override fun createClient(client: ClientModel): Boolean {
+        val result = clientsCol.insertOne(client.json)
+        if (!result.wasAcknowledged())
+            return false
+        return true
     }
 
     /**
@@ -73,9 +90,12 @@ class ClientMemStore: ClientStore {
      * @param client
      * @param workout
      */
-    override fun createClientWorkout(client: ClientModel, workout: WorkoutModel) {
+    override fun createClientWorkout(client: ClientModel, workout: WorkoutModel): Boolean {
         client.workoutPlan.add(workout)
-        logWorkouts(client)
+        val result = clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
+        if (!result.wasAcknowledged())
+            return false
+        return true
     }
 
     /**
@@ -84,9 +104,14 @@ class ClientMemStore: ClientStore {
      * @param workout
      * @param exercise
      */
-    override fun createExercise(workout: WorkoutModel, exercise: ExerciseModel) {
-        workout.exercises.add(exercise)
-        logExercises(workout)
+    override fun createExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel): Boolean {
+        client.workoutPlan.find {
+                foundWorkout -> foundWorkout.name == workout.name
+        }!!.exercises.add(exercise)
+        val result = clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
+        if (!result.wasAcknowledged())
+            return false
+        return true
     }
 
     /**
@@ -94,13 +119,11 @@ class ClientMemStore: ClientStore {
      *
      * @param client
      */
-    override fun updateClientDetails(client: ClientModel) {
-        val foundClient = findClient(client.fullName)
-        if (foundClient != null) {
-            foundClient.fullName = client.fullName
-            foundClient.phoneNumber = client.phoneNumber
-            foundClient.emailAddress = client.emailAddress
-        }
+    override fun updateClientDetails(clientDBRef: String, client: ClientModel): Boolean {
+        val result = clientsCol.updateOne(ClientModel::fullName eq clientDBRef, client)
+        if (result.wasAcknowledged())
+            return true
+        return false
     }
 
     /**
@@ -108,12 +131,13 @@ class ClientMemStore: ClientStore {
      *
      * @param workout
      */
-    override fun updateClientWorkout(client: ClientModel, workout: WorkoutModel) {
-        val foundWorkout = findWorkout(client.fullName, workout.name)
-        if (foundWorkout != null) {
-            foundWorkout.name = workout.name
-            foundWorkout.type = foundWorkout.type
-        }
+    override fun updateWorkoutDetails(client: ClientModel, oldWorkout: WorkoutModel, newWorkout: WorkoutModel): Boolean {
+        client.workoutPlan.remove(oldWorkout)
+        client.workoutPlan.add(newWorkout)
+        val result = clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
+        if (result.wasAcknowledged())
+            return true
+        return false
     }
 
     /**
@@ -122,15 +146,17 @@ class ClientMemStore: ClientStore {
      * @param workout
      * @param exercise
      */
-    override fun updateExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel) {
-        val foundExercise = findExercise(client.fullName, workout.name, exercise.name)
-        if (foundExercise != null) {
-            foundExercise.name = exercise.name
-            foundExercise.description = exercise.description
-            foundExercise.sets = exercise.sets
-            foundExercise.reps = exercise.reps
-            foundExercise.repsInReserve = exercise.repsInReserve
-        }
+    override fun updateExercise(client: ClientModel, workout: WorkoutModel, oldExercise: ExerciseModel, newExercise: ExerciseModel): Boolean {
+        client.workoutPlan.find {
+                foundWorkout -> foundWorkout.name == workout.name
+        }!!.exercises.remove(oldExercise)
+        client.workoutPlan.find {
+                foundWorkout -> foundWorkout.name == workout.name
+        }!!.exercises.add(newExercise)
+        val result = clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
+        if (result.wasAcknowledged())
+            return true
+        return false
     }
 
     /**
@@ -138,8 +164,11 @@ class ClientMemStore: ClientStore {
      *
      * @param client
      */
-    override fun deleteClient(client: ClientModel) {
-        clients.remove(client)
+    override fun deleteClient(client: ClientModel): Boolean {
+        clientsCol.findOneAndDelete(ClientModel::fullName eq client.fullName)
+        findClient(client.fullName)
+            ?: return true
+        return false
     }
 
     /**
@@ -148,8 +177,16 @@ class ClientMemStore: ClientStore {
      * @param client
      * @param workout
      */
-    override fun deleteWorkout(client: ClientModel, workout: WorkoutModel) {
-        client.workoutPlan.remove(workout)
+    override fun deleteWorkout(client: ClientModel, workout: WorkoutModel): Boolean {
+        client.workoutPlan.find{
+                foundWorkout -> foundWorkout.name == workout.name
+        }?.let {
+            client.workoutPlan.remove(it)
+        }
+        clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
+        findWorkout(client.fullName, workout.name)
+            ?: return true
+        return false
     }
 
     /**
@@ -158,8 +195,14 @@ class ClientMemStore: ClientStore {
      * @param workout
      * @param exercise
      */
-    override fun deleteExercise(workout: WorkoutModel, exercise: ExerciseModel) {
-        workout.exercises.remove(exercise)
+    override fun deleteExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel): Boolean {
+        client.workoutPlan.find { foundWorkout ->
+            foundWorkout.name == workout.name
+        }?.exercises?.remove(exercise)
+        clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
+        findExercise(client.fullName, workout.name, exercise.name)
+            ?: return true
+        return false
     }
 
     /**
@@ -171,9 +214,9 @@ class ClientMemStore: ClientStore {
         clients.forEach{
             logger.info {
                 it.fullName + "\n" +
-                "Client ID: " + it.id + "\n" +
+                "Client ID: " + it._id + "\n" +
                 "Email Address: " + it.emailAddress + "\n" +
-                "Phone Number: " + it.phoneNumber.rawInput + "\n" +
+                "Phone Number: " + it.phoneNumber + "\n" +
                 "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
             }
         }
@@ -199,7 +242,7 @@ class ClientMemStore: ClientStore {
         client.workoutPlan.forEach{
             logger.info {
                 it.name + "\n" +
-                "Workout ID: " + it.id + "\n" +
+                "Workout ID: " + it._id + "\n" +
                 "Workout Type: " + it.type + "\n" +
                 "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
             }
@@ -228,7 +271,7 @@ class ClientMemStore: ClientStore {
         workout.exercises.forEach{
             logger.info {
                 it.name + "\n" +
-                "Exercise ID: " + it.id + "\n" +
+                "Exercise ID: " + it._id + "\n" +
                 "Exercise Description: " + it.description + "\n" +
                 "Sets: " + it.sets + "\n" +
                 "Reps: " + it.reps + "\n" +
@@ -258,22 +301,22 @@ class ClientMemStore: ClientStore {
         clients.forEach{
             logger.info {
                 it.fullName + "\n" +
-                "Client ID: " + it.id + "\n" +
+                "Client ID: " + it._id + "\n" +
                 "Email Address: " + it.emailAddress + "\n" +
-                "Phone Number: " + it.phoneNumber.rawInput + "\n" +
+                "Phone Number: " + it.phoneNumber + "\n" +
                 "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
             }
             it.workoutPlan.forEach{
                 logger.info {
                     it.name + "\n" +
-                    "Workout ID: " + it.id + "\n" +
+                    "Workout ID: " + it._id + "\n" +
                     "Workout Type: " + it.type + "\n" +
                     "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
                 }
                 it.exercises.forEach{
                     logger.info {
                         it.name + "\n" +
-                        "Exercise ID: " + it.id + "\n" +
+                        "Exercise ID: " + it._id + "\n" +
                         "Exercise Description: " + it.description + "\n" +
                         "Sets: " + it.sets + "\n" +
                         "Reps: " + it.reps + "\n" +

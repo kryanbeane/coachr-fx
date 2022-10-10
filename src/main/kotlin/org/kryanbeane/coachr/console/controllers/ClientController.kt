@@ -1,6 +1,5 @@
 package org.kryanbeane.coachr.console.controllers
 
-import com.google.i18n.phonenumbers.Phonenumber
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
@@ -16,16 +15,9 @@ class ClientController {
     private var workoutController = WorkoutController(this)
 
     init {
-        logger.info("Launching Coachr Console Application")
+        Thread.sleep(1_500)
+        println("\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n")
         println("Coachr App v1.0.0")
-    }
-
-    /**
-     * initialize some testing clients with workouts and exercises pre made
-     *
-     */
-    private fun initObjects() {
-        populateDummyClients()
     }
 
     /**
@@ -33,7 +25,6 @@ class ClientController {
      *
      */
     fun start() {
-        initObjects()
         var input: Int
         do {
             input = clientView.mainMenuView()
@@ -91,7 +82,7 @@ class ClientController {
         do {
             input = clientView.editClientMenuView()
             when(input) {
-                1 -> clientView.updateClientDetails(client)
+                1 -> updateClientDetails(client.fullName, client)
                 2 -> workoutController.editWorkoutPlanMenu(client)
                 3 -> clients.logWorkouts(client)
                 4 -> clientMenu()
@@ -125,12 +116,30 @@ class ClientController {
      */
     private fun addNewClient() {
         val newClient = ClientModel()
+
         if(clientView.newClientDetailsAreValid(newClient)) {
-            clients.createClient(newClient)
-            logger.info("Client Added: ${newClient.fullName}")
-        }
-        else
+
+            if (clients.findClient(newClient.fullName) == null) {
+                val successful = clients.createClient(newClient)
+
+                if (!successful)
+                    logger.info("Error adding client to database")
+                else
+                    logger.info("Client ${newClient.fullName} added to database")
+            } else
+                logger.info("Client ${newClient.fullName} already exists")
+
+        } else
             logger.error("Invalid Client Details, Please Try Again")
+    }
+
+    private fun updateClientDetails(clientDBRef: String, client: ClientModel) {
+        val updatedClientState = clientView.updateClientDetails(client)
+        val updated = clients.updateClientDetails(clientDBRef, updatedClientState)
+        if (updated)
+            logger.info("Client ${client.fullName} details successfully updated")
+        else
+            logger.error("Failed to update client details, please try again")
     }
 
     /**
@@ -139,11 +148,12 @@ class ClientController {
      * @param client to be deleted
      */
     private fun deleteClient(client: ClientModel) {
-        clients.deleteClient(client)
-        if(clients.findClient(client.fullName) == null)
-            logger.info("Client Successfully Deleted: ${client.fullName}")
+        val success = clients.deleteClient(client)
+        val foundClient = clients.findClient(client.fullName)
+        if (!success || foundClient != null)
+            logger.error("Failed to delete client ${client.fullName}")
         else
-            logger.error("Client Deletion Failed, Please Try Again")
+            logger.info("Client ${client.fullName} successfully deleted")
     }
 
     /**
@@ -168,77 +178,6 @@ class ClientController {
         else
             logger.error("Invalid Client Name, please try again")
             return null
-    }
-
-    /**
-     * populates client memory store with some test client data
-     *
-     */
-    private fun populateDummyClients() {
-        clients.createClient(
-            ClientModel(
-                fullName = "Dominik",
-                phoneNumber = Phonenumber.PhoneNumber().setRawInput("+353871234567"),
-                emailAddress = "dominil@gmail.com",
-                workoutPlan = arrayListOf(
-                    WorkoutModel(
-                        name = "Push A",
-                        type = "Chest, Shoulders & Triceps",
-                        exercises = arrayListOf(
-                            ExerciseModel(
-                                name = "Bench Press",
-                                description = "Retract scapulae, arch your back and use leg drive. Maintain stability by engaging your lats throughout",
-                                sets = 5,
-                                reps = 8,
-                                repsInReserve = 1
-                            ),
-                            ExerciseModel(
-                                name = "Overhead Press",
-                                description = "Brace your core, squeeze your glutes, and drive the bar upwards",
-                                sets = 5,
-                                reps = 15,
-                                repsInReserve = 2
-                            )
-                        )
-                    ),
-                    WorkoutModel(
-                        name = "Legs A",
-                        type = "Quads, Hamstrings and Calves",
-                        exercises = arrayListOf(
-                            ExerciseModel(
-                                name = "Squat",
-                                description = "Rest the bar on your traps, brace your core, and begin by hinging at the hips and squatting bellow parallel before squatting the weight upwards",
-                                sets = 5,
-                                reps = 5,
-                                repsInReserve = 8
-                            )
-                        )
-                    )
-                )
-            )
-        )
-        clients.createClient(
-            ClientModel(
-                fullName = "Denis",
-                phoneNumber = Phonenumber.PhoneNumber().setRawInput("+353837654321"),
-                emailAddress = "denis@gmail.com",
-                workoutPlan = arrayListOf(
-                    WorkoutModel(
-                        name = "Upper Body",
-                        type = "Chest, Shoulders & Back",
-                        exercises = arrayListOf(
-                            ExerciseModel(
-                                name = "Seated High Row",
-                                description = "Sit on bench, brace and pull elbow towards your back pocket to engage the iliac(lower) lat",
-                                sets = 5,
-                                reps = 8,
-                                repsInReserve = 1
-                            ),
-                        )
-                    ),
-                )
-            )
-        )
     }
 
 }

@@ -69,7 +69,7 @@ class WorkoutView {
      *
      * @param workout to be updated
      */
-    fun updateWorkoutDetails(workout: WorkoutModel) {
+    fun updateWorkoutDetails(workout: WorkoutModel): WorkoutModel {
         println()
         println(
             "\n" +
@@ -95,6 +95,7 @@ class WorkoutView {
         else
             println("Workout Type ${workout.type} Unchanged")
         println()
-        println("Client ${workout.name} Updated Successfully")
+        println("Client ${workout.name} Updated")
+        return workout
     }
 }

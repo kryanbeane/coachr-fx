@@ -26,7 +26,7 @@ class WorkoutController(private var clientCtrlr: ClientController) {
                 2 -> {
                     val workout = setCurrentWorkoutMenu(client)
                     if(workout != null)
-                        workoutView.updateWorkoutDetails(workout)
+                        updateWorkoutDetails(client, workout)
                     else
                         println("No Workout Selected")
                 }
@@ -78,13 +78,33 @@ class WorkoutController(private var clientCtrlr: ClientController) {
      */
     private fun createNewWorkout(client: ClientModel) {
         val newWorkout = WorkoutModel()
-        if(workoutView.newWorkoutDetailsAreValid(newWorkout)) {
-            clients.createClientWorkout(client, newWorkout)
-            logger.info("Client Added: ${newWorkout.name}")
-        }
-        else
-            logger.error("Invalid Client Details, please try again")
+
+        if (workoutView.newWorkoutDetailsAreValid(newWorkout)) {
+
+            if (clients.findWorkout(client.fullName, newWorkout.name) == null) {
+                val successful = clients.createClientWorkout(client, newWorkout)
+
+                if (!successful)
+                    logger.error("Error adding client's workout to database")
+                else
+                    logger.info("Workout ${newWorkout.name} added to database")
+            } else
+                logger.error("Workout ${newWorkout.name} already exists")
+
+        } else
+            logger.error("Invalid client details, please try again")
     }
+
+    private fun updateWorkoutDetails(client: ClientModel, workout: WorkoutModel) {
+        val oldWorkoutState = workout.copy()
+        val newWorkoutState = workoutView.updateWorkoutDetails(workout)
+        val updated = clients.updateWorkoutDetails(client, oldWorkoutState, newWorkoutState)
+        if (updated)
+            logger.info("Workout ${workout.name} details successfully updated")
+        else
+            logger.error("Failed to update workout details, please try again")
+    }
+
 
     /**
      * allows users to delete a workout
@@ -93,11 +113,12 @@ class WorkoutController(private var clientCtrlr: ClientController) {
      * @param workout to delete
      */
     private fun deleteWorkout(client: ClientModel, workout: WorkoutModel) {
-        clients.deleteWorkout(client, workout)
-        if(clients.findWorkout(client.fullName, workout.name) == null)
-            logger.info("Workout Successfully Deleted: ${workout.name}")
+        val success = clients.deleteWorkout(client, workout)
+        val foundWorkout = clients.findWorkout(client.fullName, workout.name)
+        if (!success || foundWorkout != null)
+            logger.error("Error deleting workout")
         else
-            logger.error("Workout Deletion Failed, Please Try Again")
+            logger.info("Workout ${workout.name} deleted")
     }
 
     /**
