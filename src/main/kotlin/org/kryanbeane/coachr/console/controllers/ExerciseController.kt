@@ -23,11 +23,11 @@ class ExerciseController(private var clientCtrlr: ClientController, private var 
         do {
             input = exerciseView.editWorkoutMenuView()
             when(input) {
-                1 -> createNewExercise(workout)
+                1 -> createNewExercise(client, workout)
                 2 -> {
-                    val exercise = setCurrentExerciseMenu(client,  workout)
+                    val exercise = setCurrentExerciseMenu(client, workout)
                     if (exercise != null)
-                        exerciseView.updateExerciseDetails(exercise)
+                        updateExerciseDetails(client, workout, exercise)
                     else
                         println("No Exercise Selected")
                 }
@@ -71,14 +71,33 @@ class ExerciseController(private var clientCtrlr: ClientController, private var 
      *
      * @param workout to add exercise to
      */
-    private fun createNewExercise(workout: WorkoutModel) {
+    private fun createNewExercise(client: ClientModel, workout: WorkoutModel) {
         val newExercise = ExerciseModel()
-        if(exerciseView.newExerciseDetailsAreValid(newExercise)) {
-            clients.createExercise(workout, newExercise)
-            logger.info("Exercise Added: ${newExercise.name}")
-        }
+        println(workout)
+        if (exerciseView.newExerciseDetailsAreValid(newExercise)) {
+
+            if (clients.findExercise(client.fullName, workout.name, newExercise.name) == null) {
+                val successful = clients.createExercise(client, workout, newExercise)
+                println(successful)
+                if (!successful)
+                    logger.error("Error adding new exercise to database")
+                else
+                    logger.info("Exercise ${newExercise.name} added to database")
+            } else
+                logger.error("Exercise ${newExercise.name} already exists")
+
+        } else
+            logger.error("Invalid exercise details, please try again")
+    }
+
+    private fun updateExerciseDetails(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel) {
+        val oldExerciseState = exercise.copy()
+        val newExerciseState = exerciseView.updateExerciseDetails(exercise)
+        val updated = clients.updateExercise(client, workout, oldExerciseState, newExerciseState)
+        if (updated)
+            logger.info("Exercise ${exercise.name} details successfully updated")
         else
-            logger.error("Invalid Exercise Details, please try again")
+            logger.error("Failed to update exercise details, please try again")
     }
 
     /**
@@ -89,11 +108,12 @@ class ExerciseController(private var clientCtrlr: ClientController, private var 
      * @param exercise to delete
      */
     private fun deleteExercise(client: ClientModel, workout: WorkoutModel, exercise: ExerciseModel) {
-        clients.deleteExercise(workout, exercise)
-        if(clients.findExercise(client.fullName, workout.name, exercise.name) == null)
-            logger.info("Exercise Successfully Deleted: ${exercise.name}")
+        val success = clients.deleteExercise(client, workout, exercise)
+        val foundExercise = clients.findExercise(client.fullName, workout.name, exercise.name)
+        if (!success || foundExercise != null)
+            logger.error("Error deleting exercise")
         else
-            logger.error("Exercise Deletion Failed, Please Try Again")
+            logger.info("Workout ${workout.name} deleted")
     }
 
     /**

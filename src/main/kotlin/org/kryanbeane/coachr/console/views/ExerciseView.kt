@@ -64,7 +64,7 @@ class ExerciseView {
      *
      * @param exercise exercise object
      */
-    fun updateExerciseDetails(exercise: ExerciseModel) {
+    fun updateExerciseDetails(exercise: ExerciseModel): ExerciseModel {
         println(
             "\n" + "\n" +
                     "█░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀   █▀▀ ▀▄▀ █▀▀ █▀█ █▀▀ █ █▀ █▀▀   █▀▄ █▀▀ ▀█▀ ▄▀█ █ █░░ █▀\n" +
@@ -110,8 +110,9 @@ class ExerciseView {
             exercise.sets = rir.toInt()
         else
             println("Exercise Reps in Reserve ${exercise.repsInReserve} Unchanged" + "\n")
-
-        println("Exercise ${exercise.name} Updated Successfully")
+        println()
+        println("Exercise ${exercise.name} Updated")
+        return exercise
     }
 
     /**
