@@ -1,10 +1,7 @@
 package org.kryanbeane.coachr.console.views
 
-import com.google.i18n.phonenumbers.NumberParseException
-import com.google.i18n.phonenumbers.PhoneNumberUtil
-import com.google.i18n.phonenumbers.Phonenumber
+import org.kryanbeane.coachr.console.main.clientController
 import org.kryanbeane.coachr.console.models.ClientModel
-
 
 class ClientView {
     private val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
@@ -145,10 +142,10 @@ class ClientView {
         println(newClient.phoneNumber)
 
         // Includes phone number validation using googles phone number library
-        println("Enter Phone Number Including Country Code: ")
+        println("Enter Phone Number: ")
         val number = readLine()!!
         if (phoneNumberIsValid(number))
-            newClient.phoneNumber = Phonenumber.PhoneNumber().setRawInput(number)
+            newClient.phoneNumber = number.toLong()
         else {
             println("Invalid Phone Number")
             return false
@@ -163,11 +160,11 @@ class ClientView {
      * @param client
      * @return
      */
-    fun clientNameIsValid(client: ClientModel): Boolean {
+    fun clientName(client: ClientModel): Boolean {
         print("\n" + "Enter Client Name: ")
-        client.fullName = readLine()!!
+        var name = readLine()!!
+        return clientController.clients[index.toInt()] != null
 
-        return client.fullName.isNotEmpty()
     }
 
     /**
@@ -175,7 +172,7 @@ class ClientView {
      *
      * @param client to be updated
      */
-    fun updateClientDetails(client: ClientModel) {
+    fun updateClientDetails(client: ClientModel): ClientModel {
         println()
         println(
             "\n" +
@@ -204,14 +201,14 @@ class ClientView {
 
         // Check for valid phone number using googles phone number validation library
         println("\n" + "Current Client Phone Number: " + client.phoneNumber)
-        println("Enter New Phone Number Including Country Code: ")
+        println("Enter New Phone Number: ")
         val phoneNumber = readLine()!!
         if (phoneNumberIsValid(phoneNumber))
-            client.phoneNumber = Phonenumber.PhoneNumber().setRawInput(phoneNumber)
+            client.phoneNumber = phoneNumber.toLong()
         else
             println("Client Phone Number ${client.phoneNumber} Unchanged" + "\n")
 
-        println("Client ${client.fullName} Updated Successfully")
+        return client
     }
 
     /**
@@ -226,15 +223,12 @@ class ClientView {
     }
 
     /**
-     * validate phone number from googles phone number library taking in the number and the country code
+     * validate phone number
      *
-     * @reference https://stackoverflow.com/a/29109143
      * @param phoneNumber to validate
      * @return true if valid phone number false if not
      */
-    private fun phoneNumberIsValid(phoneNumber: String?): Boolean {
-        val phoneUtil = PhoneNumberUtil.getInstance()
-        val number = phoneUtil.parse(phoneNumber, Phonenumber.PhoneNumber.CountryCodeSource.UNSPECIFIED.name)
-        return phoneUtil.isValidNumber(number)
+    private fun phoneNumberIsValid(phoneNumber: String): Boolean {
+        return phoneNumber.length > 9
     }
 }

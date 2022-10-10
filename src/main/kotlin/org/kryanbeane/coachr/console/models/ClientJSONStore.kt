@@ -3,22 +3,39 @@ package org.kryanbeane.coachr.console.models
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.mongodb.client.MongoCollection
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.helpers.*
 import java.util.*
+import org.litote.kmongo.*
+import io.github.cdimascio.dotenv.Dotenv
+import java.lang.reflect.Type
 
 private val logger = KotlinLogging.logger {}
 
-val JSON_FILE = "clients.json"
-val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
-val listType = object: TypeToken<ArrayList<ClientModel>>() {}.type
+const val JSON_FILE = "clients.json"
+val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting().create()
+val listType: Type = object: TypeToken<ArrayList<ClientModel>>() {}.type
+
+private fun initializeMongoConnection(): MongoCollection<ClientModel> {
+    val client =  KMongo.createClient("mongodb+srv://${Dotenv.load().get("USER_NAME")}:${Dotenv.load().get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")
+    val database = client.getDatabase("coachr-client-db")
+    return database.getCollection<ClientModel>("coach-clients")
+}
 
 class ClientJSONStore: ClientStore {
     private var clients = mutableListOf<ClientModel>()
+    private var clientsCol: MongoCollection<ClientModel> = initializeMongoConnection()
 
     init {
         if (exists(JSON_FILE)) {
             deserialize()
+        }
+    }
+
+    private fun save() {
+        clients.forEach{
+            clientsCol.insertOne(gsonBuilder.toJson(it))
         }
     }
 
@@ -37,10 +54,22 @@ class ClientJSONStore: ClientStore {
      * @param clientName
      * @return client or null
      */
-    override fun findClient(clientName: String): ClientModel? {
-        return clients.find{
-                client -> client.fullName == clientName
-        }
+    override fun findClientByName(clientName: String): ClientModel? {
+        println("Searching for client: $clientName")
+        println(clientsCol.findOne(ClientModel::fullName eq clientName))
+        return clientsCol.findOne(ClientModel::fullName eq clientName)
+    }
+
+    /**
+     * find client matching id param
+     *
+     * @param clientName
+     * @return client or null
+     */
+    fun findClientByID(id: UUID): ClientModel? {
+        println("Searching for client id: $id")
+        println(clientsCol.findOne(ClientModel::_id eq id))
+        return clientsCol.findOne(ClientModel::_id eq id)
     }
 
     /**
@@ -51,7 +80,7 @@ class ClientJSONStore: ClientStore {
      * @return workout or null
      */
     override fun findWorkout(clientName: String, workoutName: String): WorkoutModel? {
-        return findClient(clientName)?.workoutPlan?.find{
+        return findClientByName(clientName)?.workoutPlan?.find{
                 workout -> workout.name == workoutName
         }
     }
@@ -77,7 +106,7 @@ class ClientJSONStore: ClientStore {
      */
     override fun createClient(client: ClientModel) {
         clients.add(client)
-        serialize()
+        clientsCol.insertOne(gsonBuilder.toJson(client))
     }
 
     /**
@@ -88,7 +117,6 @@ class ClientJSONStore: ClientStore {
      */
     override fun createClientWorkout(client: ClientModel, workout: WorkoutModel) {
         client.workoutPlan.add(workout)
-        serialize()
     }
 
     /**
@@ -108,13 +136,15 @@ class ClientJSONStore: ClientStore {
      * @param client
      */
     override fun updateClientDetails(client: ClientModel) {
-        val foundClient = findClient(client.fullName)
+        val foundClient = findClientByName(client.fullName)
         if (foundClient != null) {
+            val updateRes = clientsCol.updateOne(foundClient.json, client)
+            println("update res $updateRes")
             foundClient.fullName = client.fullName
             foundClient.phoneNumber = client.phoneNumber
             foundClient.emailAddress = client.emailAddress
+
         }
-        serialize()
     }
 
     /**
@@ -200,9 +230,9 @@ class ClientJSONStore: ClientStore {
         clients.forEach{
             logger.info {
                 it.fullName + "\n" +
-                        "Client ID: " + it.id + "\n" +
+                        "Client ID: " + it._id + "\n" +
                         "Email Address: " + it.emailAddress + "\n" +
-                        "Phone Number: " + it.phoneNumber.rawInput + "\n" +
+                        "Phone Number: " + it.phoneNumber + "\n" +
                         "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
             }
         }
@@ -212,9 +242,9 @@ class ClientJSONStore: ClientStore {
      * log all client names for use of client selection
      */
     internal fun logClientNames() {
-        clients.forEach{
+        clients.forEachIndexed{ index, client ->
             logger.info {
-                "Client Name: " + it.fullName + "\n"
+                "$index. Client Name: " + client.fullName + "\n"
             }
         }
     }
@@ -228,7 +258,7 @@ class ClientJSONStore: ClientStore {
         client.workoutPlan.forEach{
             logger.info {
                 it.name + "\n" +
-                        "Workout ID: " + it.id + "\n" +
+                        "Workout ID: " + it._id + "\n" +
                         "Workout Type: " + it.type + "\n" +
                         "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
             }
@@ -241,9 +271,9 @@ class ClientJSONStore: ClientStore {
      * @param client
      */
     internal fun logWorkoutNames(client: ClientModel) {
-        client.workoutPlan.forEach{
+        client.workoutPlan.forEachIndexed{ index, workout ->
             logger.info {
-                "Workout Name: " + it.name + "\n"
+                "$index. Workout Name: " + workout.name + "\n"
             }
         }
     }
@@ -257,7 +287,7 @@ class ClientJSONStore: ClientStore {
         workout.exercises.forEach{
             logger.info {
                 it.name + "\n" +
-                        "Exercise ID: " + it.id + "\n" +
+                        "Exercise ID: " + it._id + "\n" +
                         "Exercise Description: " + it.description + "\n" +
                         "Sets: " + it.sets + "\n" +
                         "Reps: " + it.reps + "\n" +
@@ -272,9 +302,9 @@ class ClientJSONStore: ClientStore {
      * @param workout
      */
     internal fun logExerciseNames(workout: WorkoutModel) {
-        workout.exercises.forEach{
+        workout.exercises.forEachIndexed{ index, exercise ->
             logger.info {
-                "Exercise Name: " + it.name + "\n"
+                "$index. Exercise Name: " + exercise.name + "\n"
             }
         }
     }
@@ -287,22 +317,22 @@ class ClientJSONStore: ClientStore {
         clients.forEach{
             logger.info {
                 it.fullName + "\n" +
-                        "Client ID: " + it.id + "\n" +
+                        "Client ID: " + it._id + "\n" +
                         "Email Address: " + it.emailAddress + "\n" +
-                        "Phone Number: " + it.phoneNumber.rawInput + "\n" +
+                        "Phone Number: " + it.phoneNumber + "\n" +
                         "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
             }
             it.workoutPlan.forEach{
                 logger.info {
                     it.name + "\n" +
-                            "Workout ID: " + it.id + "\n" +
+                            "Workout ID: " + it._id + "\n" +
                             "Workout Type: " + it.type + "\n" +
                             "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
                 }
                 it.exercises.forEach{
                     logger.info {
                         it.name + "\n" +
-                                "Exercise ID: " + it.id + "\n" +
+                                "Exercise ID: " + it._id + "\n" +
                                 "Exercise Description: " + it.description + "\n" +
                                 "Sets: " + it.sets + "\n" +
                                 "Reps: " + it.reps + "\n" +
@@ -312,4 +342,5 @@ class ClientJSONStore: ClientStore {
             }
         }
     }
+
 }

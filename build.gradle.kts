@@ -14,10 +14,11 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.slf4j:slf4j-simple:2.0.1")
+    implementation("org.slf4j:slf4j-simple:2.0.3")
     implementation ("io.github.microutils:kotlin-logging:3.0.0")
-    implementation("com.googlecode.libphonenumber:libphonenumber:8.12.55")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("org.litote.kmongo:kmongo:4.7.1")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.3.1")
 }
 
 tasks.test {

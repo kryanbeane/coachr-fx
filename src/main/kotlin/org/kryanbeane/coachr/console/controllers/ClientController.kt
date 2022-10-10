@@ -1,6 +1,8 @@
 package org.kryanbeane.coachr.console.controllers
 
-import com.google.i18n.phonenumbers.Phonenumber
+import com.mongodb.client.MongoClient
+import com.mongodb.client.MongoDatabase
+import io.github.cdimascio.dotenv.Dotenv
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.*
 import org.kryanbeane.coachr.console.views.ClientView
@@ -18,19 +20,10 @@ class ClientController {
     }
 
     /**
-     * initialize some testing clients with workouts and exercises pre made
-     *
-     */
-    private fun initObjects() {
-        populateDummyClients()
-    }
-
-    /**
      * main menu, allows user to enter client menu, list all clients, or exit
      *
      */
     fun start() {
-        initObjects()
         var input: Int
         do {
             input = clientView.mainMenuView()
@@ -88,7 +81,7 @@ class ClientController {
         do {
             input = clientView.editClientMenuView()
             when(input) {
-                1 -> clientView.updateClientDetails(client)
+                1 -> clients.updateClientDetails(clientView.updateClientDetails(client))
                 2 -> workoutController.editWorkoutPlanMenu(client)
                 3 -> clients.logWorkouts(client)
                 4 -> clientMenu()
@@ -137,14 +130,14 @@ class ClientController {
      */
     private fun deleteClient(client: ClientModel) {
         clients.deleteClient(client)
-        if(clients.findClient(client.fullName) == null)
+        if(clients.findClientByName(client.fullName) == null)
             logger.info("Client Successfully Deleted: ${client.fullName}")
         else
             logger.error("Client Deletion Failed, Please Try Again")
     }
 
     /**
-     * allows user to search for a client based on listing or searching by name
+     * allows user to search for a client based on listing or searching
      *
      * @param listClients boolean option
      * @return found client or null
@@ -152,8 +145,8 @@ class ClientController {
     private fun searchForClient(listClients: Boolean): ClientModel? {
         val foundClient = ClientModel()
         if(listClients) clients.logClientNames()
-        if(clientView.clientNameIsValid(foundClient)) {
-            val selectedClient = clients.findClient(foundClient.fullName)
+        if(clientView.clientChoiceIsValid(foundClient)) {
+            val selectedClient = clients.findClientByName(foundClient.fullName)
             return if(selectedClient != null) {
                 logger.info("Client Selected: ${selectedClient.fullName}")
                 selectedClient
@@ -166,76 +159,4 @@ class ClientController {
             logger.error("Invalid Client Name, please try again")
             return null
     }
-
-    /**
-     * populates client memory store with some test client data
-     *
-     */
-    private fun populateDummyClients() {
-        clients.createClient(
-            ClientModel(
-                fullName = "Dominik",
-                phoneNumber = Phonenumber.PhoneNumber().setRawInput("+353871234567"),
-                emailAddress = "dominil@gmail.com",
-                workoutPlan = arrayListOf(
-                    WorkoutModel(
-                        name = "Push A",
-                        type = "Chest, Shoulders & Triceps",
-                        exercises = arrayListOf(
-                            ExerciseModel(
-                                name = "Bench Press",
-                                description = "Retract scapulae, arch your back and use leg drive. Maintain stability by engaging your lats throughout",
-                                sets = 5,
-                                reps = 8,
-                                repsInReserve = 1
-                            ),
-                            ExerciseModel(
-                                name = "Overhead Press",
-                                description = "Brace your core, squeeze your glutes, and drive the bar upwards",
-                                sets = 5,
-                                reps = 15,
-                                repsInReserve = 2
-                            )
-                        )
-                    ),
-                    WorkoutModel(
-                        name = "Legs A",
-                        type = "Quads, Hamstrings and Calves",
-                        exercises = arrayListOf(
-                            ExerciseModel(
-                                name = "Squat",
-                                description = "Rest the bar on your traps, brace your core, and begin by hinging at the hips and squatting bellow parallel before squatting the weight upwards",
-                                sets = 5,
-                                reps = 5,
-                                repsInReserve = 8
-                            )
-                        )
-                    )
-                )
-            )
-        )
-        clients.createClient(
-            ClientModel(
-                fullName = "Denis",
-                phoneNumber = Phonenumber.PhoneNumber().setRawInput("+353837654321"),
-                emailAddress = "denis@gmail.com",
-                workoutPlan = arrayListOf(
-                    WorkoutModel(
-                        name = "Upper Body",
-                        type = "Chest, Shoulders & Back",
-                        exercises = arrayListOf(
-                            ExerciseModel(
-                                name = "Seated High Row",
-                                description = "Sit on bench, brace and pull elbow towards your back pocket to engage the iliac(lower) lat",
-                                sets = 5,
-                                reps = 8,
-                                repsInReserve = 1
-                            ),
-                        )
-                    ),
-                )
-            )
-        )
-    }
-
 }
