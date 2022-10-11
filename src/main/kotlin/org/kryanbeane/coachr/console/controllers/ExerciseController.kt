@@ -73,12 +73,10 @@ class ExerciseController(private var clientCtrlr: ClientController, private var 
      */
     private fun createNewExercise(client: ClientModel, workout: WorkoutModel) {
         val newExercise = ExerciseModel()
-        println(workout)
         if (exerciseView.newExerciseDetailsAreValid(newExercise)) {
 
             if (clients.findExercise(client.fullName, workout.name, newExercise.name) == null) {
                 val successful = clients.createExercise(client, workout, newExercise)
-                println(successful)
                 if (!successful)
                     logger.error("Error adding new exercise to database")
                 else

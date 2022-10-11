@@ -8,16 +8,20 @@ import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.ClientView
 import kotlin.system.exitProcess
 
-class ClientController {
+class ClientController(
+    databaseName: String,
+    collectionName: String,
+) {
     private var logger = KotlinLogging.logger{}
-    var clients = ClientMemStore()
+    var clients = ClientMemStore(databaseName, collectionName)
     var clientView = ClientView()
     private var workoutController = WorkoutController(this)
 
     init {
         Thread.sleep(1_500)
-        println("\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n")
-        println("Coachr App v1.0.0")
+        println("\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n" +
+                "Coachr App v1.1.0"
+        )
     }
 
     /**
@@ -36,7 +40,7 @@ class ClientController {
             }
             println()
         } while (input != 0)
-        logger.info("\n" + "Shutting Down Coachr")
+        exitProcess(0)
     }
 
     /**
