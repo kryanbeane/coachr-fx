@@ -114,7 +114,7 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/coachr-1.0-SNAPSHOT.jar:$APP_HOME/lib/kotlin-logging-jvm-2.1.23.jar:$APP_HOME/lib/kotlin-stdlib-jdk8-1.7.10.jar:$APP_HOME/lib/slf4j-simple-1.7.36.jar:$APP_HOME/lib/kotlin-stdlib-jdk7-1.7.10.jar:$APP_HOME/lib/kotlin-stdlib-1.7.10.jar:$APP_HOME/lib/slf4j-api-1.7.36.jar:$APP_HOME/lib/kotlin-stdlib-common-1.7.10.jar:$APP_HOME/lib/annotations-13.0.jar
+CLASSPATH=$APP_HOME/lib/coachr-1.0-SNAPSHOT.jar:$APP_HOME/lib/kotlin-logging-jvm-3.0.0.jar:$APP_HOME/lib/kotlin-stdlib-jdk8-1.7.10.jar:$APP_HOME/lib/slf4j-simple-2.0.1.jar:$APP_HOME/lib/kmongo-4.7.1.jar:$APP_HOME/lib/dotenv-kotlin-6.3.1.jar:$APP_HOME/lib/kotlin-stdlib-jdk7-1.7.10.jar:$APP_HOME/lib/kmongo-core-4.7.1.jar:$APP_HOME/lib/kmongo-jackson-mapping-4.7.1.jar:$APP_HOME/lib/kmongo-property-4.7.1.jar:$APP_HOME/lib/kmongo-shared-4.7.1.jar:$APP_HOME/lib/kmongo-id-jackson-4.7.1.jar:$APP_HOME/lib/jackson-module-loader-0.4.0.jar:$APP_HOME/lib/kmongo-data-4.7.1.jar:$APP_HOME/lib/kreflect-1.0.0.jar:$APP_HOME/lib/kmongo-id-4.7.1.jar:$APP_HOME/lib/jackson-databind-2.13.4.jar:$APP_HOME/lib/jackson-annotations-2.13.4.jar:$APP_HOME/lib/jackson-core-2.13.4.jar:$APP_HOME/lib/jackson-module-kotlin-2.13.4.jar:$APP_HOME/lib/kotlin-reflect-1.7.10.jar:$APP_HOME/lib/kotlin-stdlib-1.7.10.jar:$APP_HOME/lib/slf4j-api-2.0.1.jar:$APP_HOME/lib/dotenv-java-2.2.4.jar:$APP_HOME/lib/kotlin-stdlib-common-1.7.10.jar:$APP_HOME/lib/annotations-13.0.jar:$APP_HOME/lib/mongodb-driver-sync-4.7.1.jar:$APP_HOME/lib/bson4jackson-2.13.1.jar:$APP_HOME/lib/mongodb-driver-core-4.7.1.jar:$APP_HOME/lib/bson-record-codec-4.7.1.jar:$APP_HOME/lib/bson-4.7.1.jar
 
 
 # Determine the Java command to use to start the JVM.
