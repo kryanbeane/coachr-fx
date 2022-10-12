@@ -3,17 +3,20 @@ package org.kryanbeane.coachr.console.controllers
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.models.ExerciseModel
-import org.kryanbeane.coachr.console.models.WorkoutModel
 import org.kryanbeane.coachr.console.views.ClientView
 import kotlin.system.exitProcess
 
 class ClientController(
+    isTest: Boolean,
     databaseName: String,
     collectionName: String,
 ) {
     private var logger = KotlinLogging.logger{}
-    var clients = ClientMemStore(databaseName, collectionName)
+    var clients = ClientMemStore(
+        isTest,
+        databaseName,
+        collectionName
+    )
     var clientView = ClientView()
     private var workoutController = WorkoutController(this)
 

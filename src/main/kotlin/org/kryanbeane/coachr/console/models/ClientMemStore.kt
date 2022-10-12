@@ -1,28 +1,44 @@
 package org.kryanbeane.coachr.console.models
 
 import com.mongodb.client.*
-import mu.KotlinLogging
 import java.util.*
 import kotlin.collections.ArrayList
 import org.litote.kmongo.*
 import io.github.cdimascio.dotenv.Dotenv
 
-private val logger = KotlinLogging.logger {}
-
+/**
+ * function to initialize mongoDB client, DB, and collection
+ *
+ * @param isTest
+ * @param databaseName
+ * @param collectionName
+ * @return mongo collection
+ */
 private fun initializeMongoConnection(
+    isTest: Boolean,
     databaseName: String,
     collectionName: String
 ): MongoCollection<ClientModel> {
-    val client =  KMongo.createClient("mongodb+srv://${Dotenv.load().get("USER_NAME")}:${Dotenv.load().get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")
-    val database = client.getDatabase(databaseName)
-    return database.getCollection<ClientModel>(collectionName)
+    // Set the client to a local client if testing, otherwise use the Atlas client form .env file
+    return if (isTest) {
+        val client = KMongo.createClient()
+        val database = client.getDatabase("test-database")
+        database.getCollection<ClientModel>()
+    } else {
+        val dotenv = Dotenv.load()
+        val client = KMongo.createClient("mongodb+srv://${dotenv.get("USER_NAME")}:${dotenv.get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")
+        val database = client.getDatabase(databaseName)
+        database.getCollection<ClientModel>(collectionName)
+    }
 }
 
 class ClientMemStore(
+    isTest: Boolean,
     databaseName: String,
     collectionName: String
 ): ClientStore {
     private val clientsCol = initializeMongoConnection(
+        isTest,
         databaseName,
         collectionName
     )

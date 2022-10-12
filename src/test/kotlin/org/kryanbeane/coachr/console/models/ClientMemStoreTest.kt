@@ -7,6 +7,7 @@ import java.util.*
 
 class ClientMemStoreTest {
     private val clientController = ClientController(
+        true,
         "coachr-client-db",
         "test-collection"
     )
