@@ -24,6 +24,15 @@ tasks.test {
     useJUnitPlatform()
 }
 
+sourceSets {
+    getByName("test").resources.srcDir("src/test/kotlin/org/kryanbeane/coachr/console/models")
+    test {
+        java {
+            srcDirs("src/test/kotlin/org/kryanbeane/coachr/console/models")
+        }
+    }
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }

@@ -1,23 +1,51 @@
 package org.kryanbeane.coachr.console.models
 
 import com.mongodb.client.*
-import mu.KotlinLogging
 import java.util.*
 import kotlin.collections.ArrayList
 import org.litote.kmongo.*
 import io.github.cdimascio.dotenv.Dotenv
 
-private val logger = KotlinLogging.logger {}
-
-private fun initializeMongoConnection(): MongoCollection<ClientModel> {
-    val client =  KMongo.createClient("mongodb+srv://${Dotenv.load().get("USER_NAME")}:${Dotenv.load().get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")
-    val database = client.getDatabase("coachr-client-db")
-    return database.getCollection<ClientModel>("coach-clients")
+/**
+ * function to initialize mongoDB client, DB, and collection
+ *
+ * @param isTest
+ * @param databaseName
+ * @param collectionName
+ * @return mongo collection
+ */
+private fun initializeMongoConnection(
+    isTest: Boolean,
+    databaseName: String,
+    collectionName: String
+): MongoCollection<ClientModel> {
+    // Set the client to a local client if testing, otherwise use the Atlas client form .env file
+    return if (isTest) {
+        val client = KMongo.createClient()
+        val database = client.getDatabase("test-database")
+        database.getCollection<ClientModel>()
+    } else {
+        val dotenv = Dotenv.load()
+        val client = KMongo.createClient("mongodb+srv://${dotenv.get("USER_NAME")}:${dotenv.get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")
+        val database = client.getDatabase(databaseName)
+        database.getCollection<ClientModel>(collectionName)
+    }
 }
 
-class ClientMemStore: ClientStore {
-    private val clientsCol = initializeMongoConnection()
-    private val clients = ArrayList<ClientModel>()
+class ClientMemStore(
+    isTest: Boolean,
+    databaseName: String,
+    collectionName: String
+): ClientStore {
+    private val clientsCol = initializeMongoConnection(
+        isTest,
+        databaseName,
+        collectionName
+    )
+
+    internal fun dropCollection() {
+        clientsCol.drop()
+    }
 
     /**
      * find all clients in client db
@@ -166,8 +194,8 @@ class ClientMemStore: ClientStore {
      */
     override fun deleteClient(client: ClientModel): Boolean {
         clientsCol.findOneAndDelete(ClientModel::fullName eq client.fullName)
-        findClient(client.fullName)
-            ?: return true
+        if (findClient(client.fullName) == null)
+            return true
         return false
     }
 
@@ -184,8 +212,8 @@ class ClientMemStore: ClientStore {
             client.workoutPlan.remove(it)
         }
         clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
-        findWorkout(client.fullName, workout.name)
-            ?: return true
+        if (findWorkout(client.fullName, workout.name) == null)
+            return true
         return false
     }
 
@@ -200,8 +228,8 @@ class ClientMemStore: ClientStore {
             foundWorkout.name == workout.name
         }?.exercises?.remove(exercise)
         clientsCol.updateOne(ClientModel::fullName eq client.fullName, client)
-        findExercise(client.fullName, workout.name, exercise.name)
-            ?: return true
+        if (findExercise(client.fullName, workout.name, exercise.name) == null)
+            return true
         return false
     }
 
@@ -211,14 +239,12 @@ class ClientMemStore: ClientStore {
      * @param clientList
      */
     internal fun logClients() {
+        val clients = findAll()
         clients.forEach{
-            logger.info {
-                it.fullName + "\n" +
-                "Client ID: " + it._id + "\n" +
-                "Email Address: " + it.emailAddress + "\n" +
-                "Phone Number: " + it.phoneNumber + "\n" +
-                "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
-            }
+            println(it.fullName)
+            println("Email Address: ${it.emailAddress}")
+            println("Phone Number: ${it.phoneNumber}")
+            println("Number of Workouts in Plan: ${it.workoutPlan.size}")
         }
     }
 
@@ -226,10 +252,9 @@ class ClientMemStore: ClientStore {
      * log all client names for use of client selection
      */
     internal fun logClientNames() {
-        clients.forEach{
-            logger.info {
-                "Client Name: " + it.fullName + "\n"
-            }
+        val clients = findAll()
+        clients.forEachIndexed { index, client ->
+            println("$index. ${client.fullName}")
         }
     }
 
@@ -240,12 +265,9 @@ class ClientMemStore: ClientStore {
      */
     internal fun logWorkouts(client: ClientModel) {
         client.workoutPlan.forEach{
-            logger.info {
-                it.name + "\n" +
-                "Workout ID: " + it._id + "\n" +
-                "Workout Type: " + it.type + "\n" +
-                "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
-            }
+            println(it.name)
+            println("Workout Type: ${it.type}")
+            println("Number of Exercises: ${it.exercises.size}")
         }
     }
 
@@ -255,10 +277,8 @@ class ClientMemStore: ClientStore {
      * @param client
      */
     internal fun logWorkoutNames(client: ClientModel) {
-        client.workoutPlan.forEach{
-            logger.info {
-                "Workout Name: " + it.name + "\n"
-            }
+        client.workoutPlan.forEachIndexed { index, workout ->
+            println("$index. ${workout.name}")
         }
     }
 
@@ -269,14 +289,11 @@ class ClientMemStore: ClientStore {
      */
     internal fun logExercises(workout: WorkoutModel) {
         workout.exercises.forEach{
-            logger.info {
-                it.name + "\n" +
-                "Exercise ID: " + it._id + "\n" +
-                "Exercise Description: " + it.description + "\n" +
-                "Sets: " + it.sets + "\n" +
-                "Reps: " + it.reps + "\n" +
-                "Reps in Reserve: " + it.repsInReserve + "\n" + "\n"
-            }
+            println(it.name)
+            println("Exercise Description: ${it.description}")
+            println("Exercise Sets: ${it.sets}")
+            println("Exercise Reps: ${it.reps}")
+            println("Exercise Reps in Reserve: ${it.repsInReserve}")
         }
     }
 
@@ -286,10 +303,8 @@ class ClientMemStore: ClientStore {
      * @param workout
      */
     internal fun logExerciseNames(workout: WorkoutModel) {
-        workout.exercises.forEach{
-            logger.info {
-                "Exercise Name: " + it.name + "\n"
-            }
+        workout.exercises.forEachIndexed { index, exercise ->
+            println("$index. ${exercise.name}")
         }
     }
 
@@ -298,30 +313,22 @@ class ClientMemStore: ClientStore {
      *
      */
     internal fun logAll() {
-        clients.forEach{
-            logger.info {
-                it.fullName + "\n" +
-                "Client ID: " + it._id + "\n" +
-                "Email Address: " + it.emailAddress + "\n" +
-                "Phone Number: " + it.phoneNumber + "\n" +
-                "Number of Workouts in Plan: " + it.workoutPlan.size + "\n" + "\n"
-            }
+        val clients = findAll()
+        clients.forEach{ it ->
+            println(it.fullName)
+            println("Email Address: ${it.emailAddress}")
+            println("Phone Number: ${it.phoneNumber}")
+            println("Number of Workouts in Plan: ${it.workoutPlan.size}")
             it.workoutPlan.forEach{
-                logger.info {
-                    it.name + "\n" +
-                    "Workout ID: " + it._id + "\n" +
-                    "Workout Type: " + it.type + "\n" +
-                    "Number of Exercises in Plan: " + it.exercises.size + "\n" + "\n"
-                }
+                println(it.name)
+                println("Workout Type: ${it.type}")
+                println("Number of Exercises: ${it.exercises.size}")
                 it.exercises.forEach{
-                    logger.info {
-                        it.name + "\n" +
-                        "Exercise ID: " + it._id + "\n" +
-                        "Exercise Description: " + it.description + "\n" +
-                        "Sets: " + it.sets + "\n" +
-                        "Reps: " + it.reps + "\n" +
-                        "Reps in Reserve: " + it.repsInReserve + "\n" + "\n"
-                    }
+                    println(it.name)
+                    println("Exercise Description: ${it.description}")
+                    println("Exercise Sets: ${it.sets}")
+                    println("Exercise Reps: ${it.reps}")
+                    println("Exercise Reps in Reserve: ${it.repsInReserve}")
                 }
             }
         }
