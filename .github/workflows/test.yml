@@ -1,5 +1,5 @@
 # The name of our workflow
-name: Build & Test
+name: Test
 
 on:
   # Trigger on every pull request and on push
@@ -24,6 +24,6 @@ jobs:
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
-          g
+          
       - name: Run Unit Tests
         run: ./gradlew test
