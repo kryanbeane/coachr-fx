@@ -11,10 +11,12 @@ import javafx.scene.control.TextField
 
 class MainClientUI : View() {
     private val controller: ClientUIController by inject()
-    private var fullNameField: TextField? = null
-    private var emailAddressField: TextField? = null
-    private var phoneNumberField: TextField? = null
+    private var fullNameField: TextField = textfield()
+    private var emailAddressField: TextField = textfield()
+    private var phoneNumberField: TextField = textfield()
+    private var phonePrefixField: TextField = textfield()
     private var currentClient: ClientModel? = null
+
     private var clientTable = tableview() {
         columnResizePolicy = SmartResize.POLICY
         column("Name", ClientModel::fullName)
@@ -56,16 +58,18 @@ class MainClientUI : View() {
 
             fieldset("Client Information", FontAwesomeIconView(FontAwesomeIcon.USER)) {
                 field("Full Name") {
-                    id = "fullName"
                     fullNameField = textfield()
+                    fullNameField.maxWidth = 175.0
                 }
                 field("Email Address") {
-                    id = "emailAddress"
                     emailAddressField = textfield()
+                    emailAddressField.maxWidth = 175.0
                 }
-                field("Phone Number") {
-                    id = "phoneNumber"
+                field("Code / Number") {
+                    phonePrefixField = textfield()
+                    phonePrefixField.maxWidth = 40.0
                     phoneNumberField = textfield()
+                    phoneNumberField.maxWidth = 125.0
                 }
             }
 
@@ -81,35 +85,39 @@ class MainClientUI : View() {
                         marginRight = 12.0
                         alignment = Pos.CENTER
                     }
+
                     setOnAction {
                         // Create the new client
-                        if (controller.createClient(
-                                fullNameField?.text.toString(),
-                                emailAddressField?.text.toString(),
-                                phoneNumberField?.text.toString()
-                            )
-                        ) {
-                            // Send notification to say confirm client creation
-                            Notifications.create()
-                                .title("Client Creation")
-                                .text("Client ${fullNameField?.text.toString()} successfully created!")
-                                .owner(this)
-                                .showInformation()
+                        val createResponseCode = controller.createClient(
+                            fullNameField.text.toString(),
+                            emailAddressField.text.toString(),
+                            phonePrefixField.text.toString() + phoneNumberField.text.toString(),
+                        )
+
+                        when (createResponseCode) {
+                            0 -> Notifications.create().title("Client Creation Info").text("Client created successfully!").owner(this).showInformation()
+                            1 -> {
+                                Notifications.create().title("Client Creation Error").text("Please enter a valid email address!").owner(this).showError()
+                                emailAddressField.clear()
+                            }
+                            2 -> {
+                                Notifications.create().title("Client Creation Error").text("Please enter a valid phone number!").owner(this).showError()
+                                phoneNumberField.clear()
+                                phonePrefixField.clear()
+                            }
+                            3 -> Notifications.create().title("Client Creation Error").text("An error occurred while creating the client!").owner(this).showError()
+                        }
+
+                        if (createResponseCode == 0) {
                             // Clear text fields
-                            fullNameField?.clear()
-                            emailAddressField?.clear()
-                            phoneNumberField?.clear()
-                            // Update client table
-                            clientTable.items = controller.retrieveAllClients().asObservable()
+                            fullNameField.clear()
+                            emailAddressField.clear()
+                            phoneNumberField.clear()
+                            phonePrefixField.clear()
                         }
-                        // Send notification to say client creation failed
-                        else {
-                            Notifications.create()
-                                .title("Client Creation")
-                                .text("Client creation failed!")
-                                .owner(this)
-                                .showError()
-                        }
+
+                        // Update client table
+                        clientTable.items = controller.retrieveAllClients().asObservable()
                     }
                 }
 
@@ -172,9 +180,10 @@ class MainClientUI : View() {
                     }
                     setOnAction {
                         // Clear text fields
-                        fullNameField?.clear()
-                        emailAddressField?.clear()
-                        phoneNumberField?.clear()
+                        fullNameField.clear()
+                        emailAddressField.clear()
+                        phoneNumberField.clear()
+                        phonePrefixField.clear()
                     }
                 }
             }

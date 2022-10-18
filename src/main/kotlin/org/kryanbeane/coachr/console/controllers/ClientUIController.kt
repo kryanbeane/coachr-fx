@@ -24,21 +24,20 @@ class ClientUIController: Controller() {
      * @param phoneEntry client phone number
      * @return true if client was created successfully, false otherwise
      */
-    fun createClient(nameEntry: String, emailEntry: String, phoneEntry: String): Boolean {
+    fun createClient(nameEntry: String, emailEntry: String, phoneEntry: String): Int {
         // Phone number validation
         val phoneNumber = phoneNumberIsValid(phoneEntry)
 
         // Validate new client details and if they're okay, create a new client
-        return if (phoneEntry.length < 10 || phoneNumber == null || !emailIsValid(emailEntry)) {
-            false
-        } else {
-            clients.createClient(
-                ClientModel(
-                    fullName = nameEntry,
-                    emailAddress = emailEntry,
-                    phoneNumber = phoneNumber,
-                )
-            )
+        return if (!emailIsValid(emailEntry))
+            1
+        else if (phoneNumberIsValid(phoneEntry) == null)
+            2
+        else {
+            if (clients.createClient(ClientModel(fullName = nameEntry, emailAddress = emailEntry, phoneNumber = phoneNumber!!)))
+                0
+            else
+                3
         }
     }
 
