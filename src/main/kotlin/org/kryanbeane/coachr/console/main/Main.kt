@@ -1,7 +1,6 @@
 package org.kryanbeane.coachr.console.main
 
-import org.kryanbeane.coachr.console.controllers.ClientController
-import org.kryanbeane.coachr.console.views.MainClientUI
+import org.kryanbeane.coachr.console.views.TornadoUI
 import tornadofx.*
 
 //val clientController = ClientController(
@@ -15,4 +14,4 @@ fun main(args: Array<String>) {
     // clientController.start()
 }
 
-class MainUIApp : App(MainClientUI::class)
+class MainUIApp: App(TornadoUI::class)
