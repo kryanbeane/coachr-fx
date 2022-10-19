@@ -23,7 +23,7 @@ private fun initializeMongoConnection(
     return if (isTest) {
         val client = KMongo.createClient()
         val database = client.getDatabase("test-database")
-        database.getCollection<ClientModel>()
+        database.getCollection()
     } else {
         val dotenv = Dotenv.load()
         val client = KMongo.createClient("mongodb+srv://${dotenv.get("USER_NAME")}:${dotenv.get("PASSWORD")}@coachr-client-db.blxcxzn.mongodb.net/")

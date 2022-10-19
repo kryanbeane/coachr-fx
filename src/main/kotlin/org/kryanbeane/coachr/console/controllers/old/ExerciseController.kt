@@ -1,10 +1,10 @@
-package org.kryanbeane.coachr.console.controllers
+package org.kryanbeane.coachr.console.controllers.old
 
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
-import org.kryanbeane.coachr.console.views.ExerciseView
+import org.kryanbeane.coachr.console.views.old.ExerciseView
 import kotlin.system.exitProcess
 
 class ExerciseController(private var clientCtrlr: ClientController, private var workoutCtrlr: WorkoutController) {

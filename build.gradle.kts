@@ -23,8 +23,8 @@ javafx {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("org.slf4j:slf4j-simple:2.0.3")
-    implementation ("io.github.microutils:kotlin-logging:3.0.0")
-    implementation("org.litote.kmongo:kmongo:4.7.1")
+    implementation ("io.github.microutils:kotlin-logging:3.0.2")
+    implementation("org.litote.kmongo:kmongo:4.7.0")
     implementation("io.github.cdimascio:dotenv-kotlin:6.3.1")
     implementation("no.tornado:tornadofx:2.0.0-SNAPSHOT")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")

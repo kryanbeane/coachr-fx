@@ -5,7 +5,7 @@ import org.kryanbeane.coachr.console.models.ClientModel
 import tornadofx.*
 
 class ClientUIController: Controller() {
-    private val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+    private val emailRegex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
     val clients = ClientMemStore(
         false,
         "coachr-clients-db",

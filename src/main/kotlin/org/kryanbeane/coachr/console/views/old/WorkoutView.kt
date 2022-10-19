@@ -1,4 +1,4 @@
-package org.kryanbeane.coachr.console.views
+package org.kryanbeane.coachr.console.views.old
 
 import org.kryanbeane.coachr.console.models.WorkoutModel
 
