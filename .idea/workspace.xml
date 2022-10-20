@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="acdcecc0-e348-4df9-ad80-0b8a75583c23" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/kryanbeane/coachr/console/models/ClientMemStoreTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/kryanbeane/coachr/console/models/ClientMemStoreTest.kt" afterDir="false" />
-    </list>
+    <list default="true" id="acdcecc0-e348-4df9-ad80-0b8a75583c23" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -125,6 +123,7 @@
       <workItem from="1666124104314" duration="5056000" />
       <workItem from="1666171272596" duration="8078000" />
       <workItem from="1666193408063" duration="12514000" />
+      <workItem from="1666252893411" duration="369000" />
     </task>
     <servers />
   </component>
