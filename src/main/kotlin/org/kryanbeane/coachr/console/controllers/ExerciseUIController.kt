@@ -1,9 +1,13 @@
 package org.kryanbeane.coachr.console.controllers
 
+import javafx.beans.property.StringProperty
+import org.kryanbeane.coachr.console.controllers.old.WorkoutController
 import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.ExerciseModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 import tornadofx.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ExerciseUIController: Controller() {
     val clients = ClientUIController().clients
@@ -109,5 +113,34 @@ class ExerciseUIController: Controller() {
                 1
         }
         return 1
+    }
+
+    fun searchExerciseSubstring(client: ClientModel, workout: WorkoutModel, searchString: StringProperty, searchType: String): ArrayList<ExerciseModel> {
+        val foundExercises = arrayListOf<ExerciseModel>()
+        val allExercises = retrieveAllExercises(client, workout)
+
+        when (searchType) {
+            "Name" -> allExercises.forEach {
+                if (it.name.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundExercises.add(it)
+            }
+            "Description" -> allExercises.forEach {
+                if (it.description.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundExercises.add(it)
+            }
+            "Sets" -> allExercises.forEach {
+                if (it.sets.toString().lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundExercises.add(it)
+            }
+            "Reps" -> allExercises.forEach {
+                if (it.reps.toString().lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundExercises.add(it)
+            }
+            "Reps In Reserve" -> allExercises.forEach {
+                if (it.repsInReserve.toString().lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundExercises.add(it)
+            }
+        }
+        return foundExercises
     }
 }

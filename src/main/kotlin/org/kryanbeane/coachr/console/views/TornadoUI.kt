@@ -5,6 +5,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
+import javafx.scene.control.ComboBox
 import javafx.scene.control.TabPane
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
@@ -57,7 +58,9 @@ class TornadoUI : View() {
     /**
      * Search Stuff
      */
-    private var searchTextField: TextField = textfield()
+    private var clientSearchTextField: TextField = textfield()
+    private var workoutSearchTextField: TextField = textfield()
+    private var exerciseSearchTextField: TextField = textfield()
 
     override val root = borderpane {
         prefWidth = 823.0
@@ -92,8 +95,9 @@ class TornadoUI : View() {
                                 padding = box(8.px, 4.px, 8.px, 260.px)
                                 alignment = Pos.CENTER_RIGHT
                             }
-                            val choices = listOf("Full Name", "Email Address", "Phone Number")
+                            val choices = observableListOf("Full Name", "Email Address", "Phone Number")
                             val choice = SimpleStringProperty(choices.first())
+                            var foundClients: ArrayList<ClientModel>
                             combobox(choice, choices) {
                                 paddingRight = 4.0
                                 hboxConstraints {
@@ -101,19 +105,11 @@ class TornadoUI : View() {
                                     marginRight = 6.0
                                 }
                             }
-
-                            searchTextField = textfield() {
-                                hboxConstraints {
-                                    marginLeft = 6.0
-                                    marginRight = 6.0
-                                }
-                            }
-
-                            button("", FontAwesomeIconView(FontAwesomeIcon.SEARCH)) {
-                                hboxConstraints {
-                                    marginLeft = 6.0
-                                    marginRight = 12.0
-                                }
+                            clientSearchTextField = textfield()
+                            clientSearchTextField.promptText = "Search"
+                            clientSearchTextField.textProperty().addListener { _, _, _ ->
+                                foundClients = clientCtr.searchClientSubstring(clientSearchTextField.textProperty(), choice.value)
+                                clientTable!!.items = foundClients.asObservable()
                             }
                         }
                     }
@@ -341,7 +337,7 @@ class TornadoUI : View() {
             tab("Workouts") {
                 borderpane {
                     /**
-                     * SEARCH MENU BAR
+                     * WORKOUT SEARCH MENU BAR
                      */
                     top = hbox {
                         // LOGO HBOX
@@ -359,11 +355,12 @@ class TornadoUI : View() {
                         // MENU HBOX
                         hbox {
                             style {
-                                padding = box(8.px, 4.px, 8.px, 288.px)
+                                padding = box(8.px, 4.px, 8.px, 314.px)
                                 alignment = Pos.CENTER_RIGHT
                             }
                             val choices = listOf("Name", "Type")
                             val choice = SimpleStringProperty(choices.first())
+                            var foundWorkouts: ArrayList<WorkoutModel>
                             combobox(choice, choices) {
                                 paddingRight = 4.0
                                 hboxConstraints {
@@ -372,18 +369,11 @@ class TornadoUI : View() {
                                 }
                             }
 
-                            searchTextField = textfield() {
-                                hboxConstraints {
-                                    marginLeft = 6.0
-                                    marginRight = 6.0
-                                }
-                            }
-
-                            button("", FontAwesomeIconView(FontAwesomeIcon.SEARCH)) {
-                                hboxConstraints {
-                                    marginLeft = 6.0
-                                    marginRight = 12.0
-                                }
+                            workoutSearchTextField = textfield()
+                            workoutSearchTextField.promptText = "Search"
+                            workoutSearchTextField.textProperty().addListener { _, _, _ ->
+                                foundWorkouts = workoutCtr.searchWorkoutSubstring(selectedClient!!, workoutSearchTextField.textProperty(), choice.value)
+                                workoutTable!!.items = foundWorkouts.asObservable()
                             }
                         }
                     }
@@ -576,7 +566,7 @@ class TornadoUI : View() {
             tab("Exercises") {
                 borderpane {
                     /**
-                     * SEARCH MENU BAR
+                     * EXERCISE SEARCH MENU BAR
                      */
                     top = hbox {
                         // LOGO HBOX
@@ -594,11 +584,12 @@ class TornadoUI : View() {
                         // MENU HBOX
                         hbox {
                             style {
-                                padding = box(8.px, 4.px, 8.px, 288.px)
+                                padding = box(8.px, 4.px, 8.px, 314.px)
                                 alignment = Pos.CENTER_RIGHT
                             }
-                            val choices = listOf("Name")
+                            val choices = listOf("Name", "Description", "Sets", "Reps", "Reps in Reserve")
                             val choice = SimpleStringProperty(choices.first())
+                            var foundExercises: ArrayList<ExerciseModel>
                             combobox(choice, choices) {
                                 paddingRight = 4.0
                                 hboxConstraints {
@@ -607,22 +598,14 @@ class TornadoUI : View() {
                                 }
                             }
 
-                            searchTextField = textfield() {
-                                hboxConstraints {
-                                    marginLeft = 6.0
-                                    marginRight = 6.0
-                                }
-                            }
-
-                            button("", FontAwesomeIconView(FontAwesomeIcon.SEARCH)) {
-                                hboxConstraints {
-                                    marginLeft = 6.0
-                                    marginRight = 12.0
-                                }
+                            exerciseSearchTextField = textfield()
+                            exerciseSearchTextField.promptText = "Search"
+                            exerciseSearchTextField.textProperty().addListener { _, _, _ ->
+                                foundExercises = exerciseCtr.searchExerciseSubstring(selectedClient!!, selectedWorkout!!, exerciseSearchTextField.textProperty(), choice.value)
+                                exerciseTable!!.items = foundExercises.asObservable()
                             }
                         }
                     }
-
                     /**
                      * EXERCISE LIST
                      */
