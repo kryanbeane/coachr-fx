@@ -2,6 +2,7 @@ package org.kryanbeane.coachr.console.views
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
+import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.control.TabPane
@@ -53,6 +54,11 @@ class TornadoUI : View() {
     private var exercises: ObservableList<ExerciseModel>? = null
     private var exerciseTable: TableView<ExerciseModel>? = null
 
+    /**
+     * Search Stuff
+     */
+    private var searchTextField: TextField = textfield()
+
     override val root = borderpane {
         prefWidth = 823.0
 
@@ -64,6 +70,54 @@ class TornadoUI : View() {
              */
             tab("Clients") {
                 borderpane {
+                    /**
+                     * SEARCH MENU BAR
+                     */
+                    top = hbox {
+                        // LOGO HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 4.px)
+                                alignment = Pos.CENTER_LEFT
+                            }
+                            imageview("coachr-logo.png") {
+                                fitWidth = 200.0
+                                fitHeight = 50.0
+                            }
+                        }
+
+                        // MENU HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 260.px)
+                                alignment = Pos.CENTER_RIGHT
+                            }
+                            val choices = listOf("Full Name", "Email Address", "Phone Number")
+                            val choice = SimpleStringProperty(choices.first())
+                            combobox(choice, choices) {
+                                paddingRight = 4.0
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            searchTextField = textfield() {
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            button("", FontAwesomeIconView(FontAwesomeIcon.SEARCH)) {
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 12.0
+                                }
+                            }
+                        }
+                    }
+
                     /**
                      * CLIENT LIST
                      */
@@ -287,6 +341,54 @@ class TornadoUI : View() {
             tab("Workouts") {
                 borderpane {
                     /**
+                     * SEARCH MENU BAR
+                     */
+                    top = hbox {
+                        // LOGO HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 4.px)
+                                alignment = Pos.CENTER_LEFT
+                            }
+                            imageview("coachr-logo.png") {
+                                fitWidth = 200.0
+                                fitHeight = 50.0
+                            }
+                        }
+
+                        // MENU HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 288.px)
+                                alignment = Pos.CENTER_RIGHT
+                            }
+                            val choices = listOf("Name", "Type")
+                            val choice = SimpleStringProperty(choices.first())
+                            combobox(choice, choices) {
+                                paddingRight = 4.0
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            searchTextField = textfield() {
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            button("", FontAwesomeIconView(FontAwesomeIcon.SEARCH)) {
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 12.0
+                                }
+                            }
+                        }
+                    }
+
+                    /**
                      * WORKOUT LIST
                      */
                     workoutTable = tableview {
@@ -473,6 +575,54 @@ class TornadoUI : View() {
              */
             tab("Exercises") {
                 borderpane {
+                    /**
+                     * SEARCH MENU BAR
+                     */
+                    top = hbox {
+                        // LOGO HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 4.px)
+                                alignment = Pos.CENTER_LEFT
+                            }
+                            imageview("coachr-logo.png") {
+                                fitWidth = 200.0
+                                fitHeight = 50.0
+                            }
+                        }
+
+                        // MENU HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 288.px)
+                                alignment = Pos.CENTER_RIGHT
+                            }
+                            val choices = listOf("Name")
+                            val choice = SimpleStringProperty(choices.first())
+                            combobox(choice, choices) {
+                                paddingRight = 4.0
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            searchTextField = textfield() {
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            button("", FontAwesomeIconView(FontAwesomeIcon.SEARCH)) {
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 12.0
+                                }
+                            }
+                        }
+                    }
+
                     /**
                      * EXERCISE LIST
                      */
