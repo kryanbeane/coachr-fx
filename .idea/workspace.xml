@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="acdcecc0-e348-4df9-ad80-0b8a75583c23" name="Changes" comment="" />
+    <list default="true" id="e402f558-cf4b-4ebd-9789-858938fb82f2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/kryanbeane/coachr/console/views/TornadoUI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/kryanbeane/coachr/console/views/TornadoUI.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,7 +75,7 @@
       <recent name="org.kryanbeane.coachr.console.views.oldViews" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.ClientMemStoreTest">
+  <component name="RunManager" selected="Kotlin.MainKt">
     <configuration name="ClientMemStoreTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -103,8 +108,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.ClientMemStoreTest" />
         <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Gradle.ClientMemStoreTest" />
       </list>
     </recent_temporary>
   </component>

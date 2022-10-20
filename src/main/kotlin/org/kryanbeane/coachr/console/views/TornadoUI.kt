@@ -279,11 +279,6 @@ class TornadoUI : View() {
                         }
                     }
                 }
-            }.setOnSelectionChanged {
-                // Clear text fields
-                workoutNameField.clear()
-                workoutTypeField.clear()
-                selectedWorkout = null
             }
 
             /**
@@ -430,11 +425,16 @@ class TornadoUI : View() {
                                                 .text("Client ${workoutTable!!.selectedItem!!.name} successfully deleted!")
                                                 .owner(this).showInformation()
 
-                                            // Update client table & clear fields & selected client
+                                            // Update table & clear fields
                                             workoutNameField.clear()
                                             workoutTypeField.clear()
+                                            exerciseNameField.clear()
+                                            exerciseDescField.clear()
+                                            exerciseSetsField.clear()
+                                            exerciseRepsField.clear()
+                                            exerciseRIRField.clear()
                                             selectedWorkout = null
-
+                                            exerciseTable!!.items = null
                                             workoutTable!!.items = workoutCtr.retrieveAllWorkouts(selectedClient!!).asObservable()
 
                                         } else {
@@ -466,14 +466,6 @@ class TornadoUI : View() {
                         }
                     }
                 }
-            }.setOnSelectionChanged {
-                // Clear text fields
-                exerciseNameField.clear()
-                exerciseDescField.clear()
-                exerciseSetsField.clear()
-                exerciseRepsField.clear()
-                exerciseRIRField.clear()
-                selectedExercise = null
             }
 
             /**
@@ -702,29 +694,6 @@ class TornadoUI : View() {
                     }
                 }
             }
-        }
-    }
-
-    private fun wipeView(client: Boolean, workout: Boolean, exercise: Boolean) {
-        if (client) {
-            fullNameField.clear()
-            emailAddressField.clear()
-            phoneNumberField.clear()
-            phonePrefixField.clear()
-            selectedClient = null
-        }
-        if (workout) {
-            workoutNameField.clear()
-            workoutTypeField.clear()
-            selectedWorkout = null
-        }
-        if (exercise) {
-            exerciseNameField.clear()
-            exerciseDescField.clear()
-            exerciseSetsField.clear()
-            exerciseRepsField.clear()
-            exerciseRIRField.clear()
-            selectedExercise = null
         }
     }
 }
