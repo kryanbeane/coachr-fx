@@ -2,8 +2,10 @@ package org.kryanbeane.coachr.console.views
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
+import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
+import javafx.scene.control.ComboBox
 import javafx.scene.control.TabPane
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
@@ -53,6 +55,13 @@ class TornadoUI : View() {
     private var exercises: ObservableList<ExerciseModel>? = null
     private var exerciseTable: TableView<ExerciseModel>? = null
 
+    /**
+     * Search Stuff
+     */
+    private var clientSearchTextField: TextField = textfield()
+    private var workoutSearchTextField: TextField = textfield()
+    private var exerciseSearchTextField: TextField = textfield()
+
     override val root = borderpane {
         prefWidth = 823.0
 
@@ -64,6 +73,47 @@ class TornadoUI : View() {
              */
             tab("Clients") {
                 borderpane {
+                    /**
+                     * SEARCH MENU BAR
+                     */
+                    top = hbox {
+                        // LOGO HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 4.px)
+                                alignment = Pos.CENTER_LEFT
+                            }
+                            imageview("coachr-logo.png") {
+                                fitWidth = 200.0
+                                fitHeight = 50.0
+                            }
+                        }
+
+                        // MENU HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 260.px)
+                                alignment = Pos.CENTER_RIGHT
+                            }
+                            val choices = observableListOf("Full Name", "Email Address", "Phone Number")
+                            val choice = SimpleStringProperty(choices.first())
+                            var foundClients: ArrayList<ClientModel>
+                            combobox(choice, choices) {
+                                paddingRight = 4.0
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+                            clientSearchTextField = textfield()
+                            clientSearchTextField.promptText = "Search"
+                            clientSearchTextField.textProperty().addListener { _, _, _ ->
+                                foundClients = clientCtr.searchClientSubstring(clientSearchTextField.textProperty(), choice.value)
+                                clientTable!!.items = foundClients.asObservable()
+                            }
+                        }
+                    }
+
                     /**
                      * CLIENT LIST
                      */
@@ -279,11 +329,6 @@ class TornadoUI : View() {
                         }
                     }
                 }
-            }.setOnSelectionChanged {
-                // Clear text fields
-                workoutNameField.clear()
-                workoutTypeField.clear()
-                selectedWorkout = null
             }
 
             /**
@@ -291,6 +336,48 @@ class TornadoUI : View() {
              */
             tab("Workouts") {
                 borderpane {
+                    /**
+                     * WORKOUT SEARCH MENU BAR
+                     */
+                    top = hbox {
+                        // LOGO HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 4.px)
+                                alignment = Pos.CENTER_LEFT
+                            }
+                            imageview("coachr-logo.png") {
+                                fitWidth = 200.0
+                                fitHeight = 50.0
+                            }
+                        }
+
+                        // MENU HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 314.px)
+                                alignment = Pos.CENTER_RIGHT
+                            }
+                            val choices = listOf("Name", "Type")
+                            val choice = SimpleStringProperty(choices.first())
+                            var foundWorkouts: ArrayList<WorkoutModel>
+                            combobox(choice, choices) {
+                                paddingRight = 4.0
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            workoutSearchTextField = textfield()
+                            workoutSearchTextField.promptText = "Search"
+                            workoutSearchTextField.textProperty().addListener { _, _, _ ->
+                                foundWorkouts = workoutCtr.searchWorkoutSubstring(selectedClient!!, workoutSearchTextField.textProperty(), choice.value)
+                                workoutTable!!.items = foundWorkouts.asObservable()
+                            }
+                        }
+                    }
+
                     /**
                      * WORKOUT LIST
                      */
@@ -430,11 +517,16 @@ class TornadoUI : View() {
                                                 .text("Client ${workoutTable!!.selectedItem!!.name} successfully deleted!")
                                                 .owner(this).showInformation()
 
-                                            // Update client table & clear fields & selected client
+                                            // Update table & clear fields
                                             workoutNameField.clear()
                                             workoutTypeField.clear()
+                                            exerciseNameField.clear()
+                                            exerciseDescField.clear()
+                                            exerciseSetsField.clear()
+                                            exerciseRepsField.clear()
+                                            exerciseRIRField.clear()
                                             selectedWorkout = null
-
+                                            exerciseTable!!.items = null
                                             workoutTable!!.items = workoutCtr.retrieveAllWorkouts(selectedClient!!).asObservable()
 
                                         } else {
@@ -466,14 +558,6 @@ class TornadoUI : View() {
                         }
                     }
                 }
-            }.setOnSelectionChanged {
-                // Clear text fields
-                exerciseNameField.clear()
-                exerciseDescField.clear()
-                exerciseSetsField.clear()
-                exerciseRepsField.clear()
-                exerciseRIRField.clear()
-                selectedExercise = null
             }
 
             /**
@@ -481,6 +565,47 @@ class TornadoUI : View() {
              */
             tab("Exercises") {
                 borderpane {
+                    /**
+                     * EXERCISE SEARCH MENU BAR
+                     */
+                    top = hbox {
+                        // LOGO HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 4.px)
+                                alignment = Pos.CENTER_LEFT
+                            }
+                            imageview("coachr-logo.png") {
+                                fitWidth = 200.0
+                                fitHeight = 50.0
+                            }
+                        }
+
+                        // MENU HBOX
+                        hbox {
+                            style {
+                                padding = box(8.px, 4.px, 8.px, 314.px)
+                                alignment = Pos.CENTER_RIGHT
+                            }
+                            val choices = listOf("Name", "Description", "Sets", "Reps", "Reps in Reserve")
+                            val choice = SimpleStringProperty(choices.first())
+                            var foundExercises: ArrayList<ExerciseModel>
+                            combobox(choice, choices) {
+                                paddingRight = 4.0
+                                hboxConstraints {
+                                    marginLeft = 6.0
+                                    marginRight = 6.0
+                                }
+                            }
+
+                            exerciseSearchTextField = textfield()
+                            exerciseSearchTextField.promptText = "Search"
+                            exerciseSearchTextField.textProperty().addListener { _, _, _ ->
+                                foundExercises = exerciseCtr.searchExerciseSubstring(selectedClient!!, selectedWorkout!!, exerciseSearchTextField.textProperty(), choice.value)
+                                exerciseTable!!.items = foundExercises.asObservable()
+                            }
+                        }
+                    }
                     /**
                      * EXERCISE LIST
                      */
@@ -702,29 +827,6 @@ class TornadoUI : View() {
                     }
                 }
             }
-        }
-    }
-
-    private fun wipeView(client: Boolean, workout: Boolean, exercise: Boolean) {
-        if (client) {
-            fullNameField.clear()
-            emailAddressField.clear()
-            phoneNumberField.clear()
-            phonePrefixField.clear()
-            selectedClient = null
-        }
-        if (workout) {
-            workoutNameField.clear()
-            workoutTypeField.clear()
-            selectedWorkout = null
-        }
-        if (exercise) {
-            exerciseNameField.clear()
-            exerciseDescField.clear()
-            exerciseSetsField.clear()
-            exerciseRepsField.clear()
-            exerciseRIRField.clear()
-            selectedExercise = null
         }
     }
 }

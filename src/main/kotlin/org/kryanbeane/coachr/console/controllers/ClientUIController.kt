@@ -1,8 +1,11 @@
 package org.kryanbeane.coachr.console.controllers
 
+import javafx.beans.property.StringProperty
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
 import tornadofx.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ClientUIController: Controller() {
     private val emailRegex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
@@ -94,6 +97,26 @@ class ClientUIController: Controller() {
         return 3
     }
 
+    fun searchClientSubstring(searchString: StringProperty, searchType: String): ArrayList<ClientModel> {
+        val foundClients = arrayListOf<ClientModel>()
+        val allClients = retrieveAllClients()
+        when (searchType) {
+            "Full Name" -> allClients.forEach {
+                if (it.fullName.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundClients.add(it)
+            }
+            "Email Address" -> allClients.forEach {
+                if (it.emailAddress.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundClients.add(it)
+            }
+            "Phone Number" -> allClients.forEach {
+                if (it.phoneNumber.toString().contains(searchString.value))
+                    foundClients.add(it)
+            }
+        }
+        return foundClients
+    }
+
     /**
      * validate email address based on regex pattern to include the pattern <text>@<text>.<text>
      *
@@ -118,5 +141,6 @@ class ClientUIController: Controller() {
             else
                 null
         }
-        return null    }
+        return null
+    }
 }

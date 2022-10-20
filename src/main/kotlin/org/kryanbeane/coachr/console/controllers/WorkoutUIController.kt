@@ -1,8 +1,11 @@
 package org.kryanbeane.coachr.console.controllers
 
+import javafx.beans.property.StringProperty
 import org.kryanbeane.coachr.console.models.ClientModel
 import org.kryanbeane.coachr.console.models.WorkoutModel
 import tornadofx.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class WorkoutUIController: Controller() {
     val clients = ClientUIController().clients
@@ -69,4 +72,20 @@ class WorkoutUIController: Controller() {
         return 1
     }
 
+    fun searchWorkoutSubstring(client: ClientModel, searchString: StringProperty, searchType: String): ArrayList<WorkoutModel> {
+        val foundWorkouts = arrayListOf<WorkoutModel>()
+        val allWorkouts = retrieveAllWorkouts(client)
+
+        when (searchType) {
+            "Name" -> allWorkouts.forEach {
+                if (it.name.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundWorkouts.add(it)
+            }
+            "Type" -> allWorkouts.forEach {
+                if (it.type.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
+                    foundWorkouts.add(it)
+            }
+        }
+        return foundWorkouts
+    }
 }
