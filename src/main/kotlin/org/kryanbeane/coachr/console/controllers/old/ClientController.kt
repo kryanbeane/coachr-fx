@@ -1,21 +1,17 @@
-package org.kryanbeane.coachr.console.controllers
+package org.kryanbeane.coachr.console.controllers.old
 
 import mu.KotlinLogging
 import org.kryanbeane.coachr.console.models.ClientMemStore
 import org.kryanbeane.coachr.console.models.ClientModel
-import org.kryanbeane.coachr.console.views.ClientView
+import org.kryanbeane.coachr.console.views.old.ClientView
 import kotlin.system.exitProcess
 
-class ClientController(
-    isTest: Boolean,
-    databaseName: String,
-    collectionName: String,
-) {
+class ClientController() {
     private var logger = KotlinLogging.logger{}
     var clients = ClientMemStore(
-        isTest,
-        databaseName,
-        collectionName
+        false,
+        "coachr-clients-db",
+        "coach-clients",
     )
     var clientView = ClientView()
     private var workoutController = WorkoutController(this)

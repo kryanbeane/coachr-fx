@@ -1,12 +1,11 @@
 package org.kryanbeane.coachr.console.models
 
 import org.junit.jupiter.api.*
-import org.kryanbeane.coachr.console.controllers.ClientController
 import org.junit.jupiter.api.Assertions.*
 import java.util.*
 
 class ClientMemStoreTest {
-    private val clientController = ClientController(
+    private val clients = ClientMemStore(
         true,
         "coachr-client-db",
         "test-collection"
@@ -49,39 +48,38 @@ class ClientMemStoreTest {
             )
         )
     )
-    private val db = clientController.clients
 
     @BeforeEach
     fun setUp() {
-        db.createClient(testClient)
+        clients.createClient(testClient)
     }
 
     @AfterEach
     fun tearDown() {
-        db.dropCollection()
+        clients.dropCollection()
     }
 
     @Test
-    fun findAll() {
-        val clientList = db.findAll()
+    fun findAllClients() {
+        val clientList = clients.findAllClients()
         assertEquals(1, clientList.size)
         assertEquals(testClient, clientList[0])
     }
 
     @Test
     fun findClient() {
-        assertEquals(testClient, db.findClient(testClient.fullName))
+        assertEquals(testClient, clients.findClient(testClient.fullName))
     }
 
     @Test
     fun findWorkout() {
-        val workout = db.findWorkout(testClient.fullName, testClient.workoutPlan[0].name)
+        val workout = clients.findWorkout(testClient.fullName, testClient.workoutPlan[0].name)
         assertEquals(testClient.workoutPlan[0], workout)
     }
 
     @Test
     fun findExercise() {
-        val exercise = db.findExercise(
+        val exercise = clients.findExercise(
             testClient.fullName,
             testClient.workoutPlan[0].name,
             testClient.workoutPlan[0].exercises[0].name
@@ -92,7 +90,7 @@ class ClientMemStoreTest {
     @Test
     fun createClient() {
         assertTrue(
-            db.createClient(
+            clients.createClient(
                 ClientModel(
                     fullName = "Test Client Full Name",
                     emailAddress = "foobar@foo.bar",
@@ -106,7 +104,7 @@ class ClientMemStoreTest {
     @Test
     fun createClientWorkout() {
         assertTrue(
-            db.createClientWorkout(
+            clients.createClientWorkout(
                 testClient,
                 WorkoutModel(
                     UUID.randomUUID(),
@@ -121,7 +119,7 @@ class ClientMemStoreTest {
     @Test
     fun createExercise() {
         assertTrue(
-            db.createExercise(
+            clients.createExercise(
                 testClient,
                 testClient.workoutPlan[0],
                 ExerciseModel(
@@ -141,7 +139,7 @@ class ClientMemStoreTest {
         val testClientCopy = testClient.copy()
         testClientCopy.emailAddress = "updatedfoobar@bar.foo"
         assertTrue(
-            db.updateClientDetails(
+            clients.updateClientDetails(
                 testClient.fullName,
                 testClientCopy
             )
@@ -153,7 +151,7 @@ class ClientMemStoreTest {
         val testClientWorkoutCopy = testClient.workoutPlan[0].copy()
         testClientWorkoutCopy.name = "New Test Client Workout Copy Name"
         assertTrue(
-            db.updateWorkoutDetails(
+            clients.updateWorkoutDetails(
                 testClient,
                 testClient.workoutPlan[0],
                 testClientWorkoutCopy
@@ -166,7 +164,7 @@ class ClientMemStoreTest {
         val testClientExerciseCopy = testClient.workoutPlan[0].exercises[0].copy()
         testClientExerciseCopy.name = "New Test Client Exercise Copy Name"
         assertTrue(
-            db.updateExercise(
+            clients.updateExercise(
                 testClient,
                 testClient.workoutPlan[0],
                 testClient.workoutPlan[0].exercises[0],
@@ -178,7 +176,7 @@ class ClientMemStoreTest {
     @Test
     fun deleteClient() {
         assertTrue(
-            db.deleteClient(
+            clients.deleteClient(
                 ClientModel(
                     UUID.randomUUID(),
                     "Test Client Full Name",
@@ -193,7 +191,7 @@ class ClientMemStoreTest {
     @Test
     fun deleteWorkout() {
         assertTrue(
-            db.deleteWorkout(
+            clients.deleteWorkout(
                 testClient,
                 testClient.workoutPlan[0]
             )
@@ -203,7 +201,7 @@ class ClientMemStoreTest {
     @Test
     fun deleteExercise() {
         assertTrue(
-            db.deleteExercise(
+            clients.deleteExercise(
                 testClient,
                 testClient.workoutPlan[0],
                 testClient.workoutPlan[0].exercises[0]
