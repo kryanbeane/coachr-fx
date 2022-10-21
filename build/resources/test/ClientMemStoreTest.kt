@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Assertions.*
 import java.util.*
 
 class ClientMemStoreTest {
-    private var clients = ClientMemStore(
+    private val clients = ClientMemStore(
         true,
-        "coachr-client-clients",
+        "coachr-client-db",
         "test-collection"
     )
 

@@ -128,18 +128,6 @@ class ExerciseUIController: Controller() {
                 if (it.description.lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
                     foundExercises.add(it)
             }
-            "Sets" -> allExercises.forEach {
-                if (it.sets.toString().lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
-                    foundExercises.add(it)
-            }
-            "Reps" -> allExercises.forEach {
-                if (it.reps.toString().lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
-                    foundExercises.add(it)
-            }
-            "Reps In Reserve" -> allExercises.forEach {
-                if (it.repsInReserve.toString().lowercase(Locale.getDefault()).contains(searchString.value.lowercase(Locale.getDefault())))
-                    foundExercises.add(it)
-            }
         }
         return foundExercises
     }

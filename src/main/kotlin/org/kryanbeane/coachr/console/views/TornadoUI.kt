@@ -118,6 +118,9 @@ class TornadoUI : View() {
                      * CLIENT LIST
                      */
                     clientTable = tableview(clients) {
+                        style {
+                            padding = box(12.px, 12.px, 21.px, 4.px)
+                        }
                         column("Name", ClientModel::fullName)
                         column("Email", ClientModel::emailAddress)
                         column("Phone", ClientModel::phoneNumber)
@@ -587,7 +590,7 @@ class TornadoUI : View() {
                                 padding = box(8.px, 4.px, 8.px, 314.px)
                                 alignment = Pos.CENTER_RIGHT
                             }
-                            val choices = listOf("Name", "Description", "Sets", "Reps", "Reps in Reserve")
+                            val choices = listOf("Name", "Description")
                             val choice = SimpleStringProperty(choices.first())
                             var foundExercises: ArrayList<ExerciseModel>
                             combobox(choice, choices) {
